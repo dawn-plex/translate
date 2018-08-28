@@ -1,5 +1,6 @@
 # 阿里云翻译小组
 
+![MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 [![](https://img.shields.io/badge/%E7%9F%A5%E4%B9%8E%E4%B8%93%E6%A0%8F-%E9%98%BF%E9%87%8C%E4%BA%91%E4%B8%AD%E5%8F%B0%E5%89%8D%E7%AB%AF%2F%E5%85%A8%E6%A0%88%E5%9B%A2%E9%98%9F-blue.svg)](https://zhuanlan.zhihu.com/aliyun)
 
 ## 是什么？
