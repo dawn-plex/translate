@@ -7,13 +7,10 @@
 
 ## 怎么做？
 
-[如何推荐优秀文章？](https://github.com/dawn-teams/translate/wiki/%E5%A6%82%E4%BD%95%E6%8E%A8%E8%8D%90%E4%BC%98%E7%A7%80%E6%96%87%E7%AB%A0%EF%BC%9F)
-
-[如何参与翻译？](https://github.com/dawn-teams/translate/wiki/%E5%A6%82%E4%BD%95%E5%8F%82%E4%B8%8E%E7%BF%BB%E8%AF%91%EF%BC%9F)
-
-[如何参与校对？](https://github.com/dawn-teams/translate/wiki/%E5%A6%82%E4%BD%95%E5%8F%82%E4%B8%8E%E6%A0%A1%E5%AF%B9%EF%BC%9F)
-
-[如何发布翻译好的文章？](https://github.com/dawn-teams/translate/wiki/%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E7%BF%BB%E8%AF%91%E5%A5%BD%E7%9A%84%E6%96%87%E7%AB%A0%EF%BC%9F)
+- [如何推荐优秀文章？](https://github.com/dawn-teams/translate/wiki/%E5%A6%82%E4%BD%95%E6%8E%A8%E8%8D%90%E4%BC%98%E7%A7%80%E6%96%87%E7%AB%A0%EF%BC%9F)
+- [如何参与翻译？](https://github.com/dawn-teams/translate/wiki/%E5%A6%82%E4%BD%95%E5%8F%82%E4%B8%8E%E7%BF%BB%E8%AF%91%EF%BC%9F)
+- [如何参与校对？](https://github.com/dawn-teams/translate/wiki/%E5%A6%82%E4%BD%95%E5%8F%82%E4%B8%8E%E6%A0%A1%E5%AF%B9%EF%BC%9F)
+- [如何发布翻译好的文章？](https://github.com/dawn-teams/translate/wiki/%E5%A6%82%E4%BD%95%E5%8F%91%E5%B8%83%E7%BF%BB%E8%AF%91%E5%A5%BD%E7%9A%84%E6%96%87%E7%AB%A0%EF%BC%9F)
 
 ## 为什么？
 - 提高团队技术氛围
@@ -26,3 +23,7 @@
 
 ## 翻译节奏
 周一至周四完成文章翻译，周五至周六完成文章校对，周日发布
+
+## Copyright
+
+> **版权声明：**[阿里云翻译小组](https://github.com/dawn-teams/translate)产出译文仅用于学习交流。译文版权归[阿里云翻译小组](https://github.com/dawn-teams/translate)、原文作者和译者所有，欢迎非商业转载。
