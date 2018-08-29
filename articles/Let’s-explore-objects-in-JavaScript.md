@@ -12,7 +12,7 @@
 
 一个属性拥有一个 key 和一个 value 。
 
-## 属性的key
+## 属性的 key
 属性的 key 是一个唯一的字符串。
 
 访问属性有两种方式：点表示法和括号表示法。当使用点表示法，属性的 key 必须是有效的标识符。
@@ -54,10 +54,10 @@ obj[number1] === obj["1"]; //true
 
 在上面的示例中，对象 `number1` 被用作一个 key 。它会被转换为字符串，转换结果 “1” 被用作属性的 key 。
 
-## 属性的value
-属性的value可以是任意的基础数据类型，对象，或函数。
+## 属性的 value
+属性的 value 可以是任意的基础数据类型，对象，或函数。
 
-## 对象作为value
+## 对象作为 value
 对象可以嵌套在其他对象里。[看下面这个例子](https://jsfiddle.net/cristi_salcescu/m0a65e2g/)：
 
 ```
@@ -79,7 +79,7 @@ app.authorService = { getAuthors : function() {} };
 app.bookService = { getBooks : function() {} };
 ```
 
-## 函数作为value
+## 函数作为 value
 当一个函数被作为属性值，通常成为一个方法。在方法中，`this` 关键字代表着当前的对象。
 
 `this` ，会根据函数的调用方式有不同的值。了解更多关于`this` 丢失上下文的问题，可以查看[当"this"丢失上下文时应该怎么办](https://medium.freecodecamp.org/what-to-do-when-this-loses-context-f09664af076f)。
@@ -95,7 +95,7 @@ delete obj.otherMessage; //delete property
 ```
 
 ## Map
-我们可以把对象当做一个Map。Map的key就是对象的属性。
+我们可以把对象当做一个 Map 。Map 的 key 就是对象的属性。
 
 访问一个 key 不需要去扫描所有属性。访问的时间复杂度是 o(1)。
 
@@ -405,7 +405,7 @@ JavaScript 像对象一样处理原始值、对象和函数。
 
 对象继承自其他对象。构造函数和类是创建从其他原型对象继承的对象的语法糖。
 
-`Object.create()` 可以用来单继承，`Object.assign()` 用来多重继承。
+`Object.create()` 可以用来单一继承，`Object.assign()` 用来多重继承。
 
 工厂函数可以构建封装对象。
 
