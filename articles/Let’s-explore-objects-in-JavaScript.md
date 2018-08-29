@@ -6,16 +6,16 @@
 > * 校对者：
 
 ---
-# 一起探讨JavaScript的对象
+# 一起探讨 JavaScript 的对象
 
 对象是拥有原型“隐藏”属性的多个属性的动态集合。
 
-一个属性有一个key和一个value。
+一个属性有一个 key 和一个 value 。
 
 ## 属性的键
-属性的key是一个唯一的字符串。
+属性的 key 是一个唯一的字符串。
 
-访问属性有两种方式：点表示法和括号表示法。当使用点表示法，属性的key必须是有效的标识符。
+访问属性有两种方式：点表示法和括号表示法。当使用点表示法，属性的 key 必须是有效的标识符。
 
 ```
 let obj = {
@@ -25,12 +25,12 @@ obj.message //"A message"
 obj["message"] //"A message"
 ```
 
-访问一个不存在的属性不会抛出错误，但是会返回`undefined`。
+访问一个不存在的属性不会抛出错误，但是会返回 `undefined`。
 
 ```
 obj.otherProperty //undefined
 ```
-当使用括号表示法，属性的key不要求是有效的标识符 - 可以是任意值。
+当使用括号表示法，属性的 key 不要求是有效的标识符 —— 可以是任意值。
 
 ```
 let french = {};
@@ -38,7 +38,7 @@ french["thank you very much"] = "merci beaucoup";
 
 french["thank you very much"]; //"merci beaucoup"
 ```
-当属性的key是一个非字符串的值，它将会被转换为字符串（通过`toString()`方法，如果可用的话）。
+当属性的 key 是一个非字符串的值，它将会被转换为字符串（通过 `toString()` 方法，如果可用的话）。
 
 ```
 let obj = {};
@@ -52,7 +52,7 @@ let number1 = {
 obj[number1] === obj["1"]; //true
 ```
 
-在上面的示例中，对象`number1`被用作一个key。它会被转换为字符串，转换结果“1”被用作属性的key。
+在上面的示例中，对象 `number1` 被用作一个 key 。它会被转换为字符串，转换结果 “1” 被用作属性的 key 。
 
 ## 属性的值
 属性的值可以是任意的原始值，对象，或函数。
@@ -80,9 +80,9 @@ app.bookService = { getBooks : function() {} };
 ```
 
 ## 函数作为值
-当一个函数被作为属性值，通常成为一个方法。在方法中，`this`关键字代表着当前的对象。
+当一个函数被作为属性值，通常成为一个方法。在方法中，`this` 关键字代表着当前的对象。
 
-`this`，会根据函数的调用方式有不同的值。了解更多关于`this`丢失上下文的问题，可以查看[当"this"丢失上下文时应该怎么办](https://medium.freecodecamp.org/what-to-do-when-this-loses-context-f09664af076f)。
+`this` ，会根据函数的调用方式有不同的值。了解更多关于`this` 丢失上下文的问题，可以查看[当"this"丢失上下文时应该怎么办](https://medium.freecodecamp.org/what-to-do-when-this-loses-context-f09664af076f)。
 
 ## 动态性
 对象本质上就是动态的。可以任意添加删除属性。
@@ -97,12 +97,12 @@ delete obj.otherMessage; //delete property
 ## 图
 我们可以把对象当做一个图。图的键就是对象的属性。
 
-访问一个key不需要去扫描所有属性。访问的时间复杂度是o(1)。
+访问一个 key 不需要去扫描所有属性。访问的时间复杂度是 o(1)。
 
 ## 原型
-对象有一个链接着原型对象的”隐藏“属性`__proto__`，对象是从这个原型对象中继承属性的。
+对象有一个链接着原型对象的”隐藏“属性 `__proto__`，对象是从这个原型对象中继承属性的。
 
-举个例子，使用对象字面量创建的对象有一个指向`Object.prototype`的链接:
+举个例子，使用对象字面量创建的对象有一个指向 `Object.prototype` 的链接:
 
 ```
 var obj = {};
@@ -110,16 +110,16 @@ obj.__proto__ === Object.prototype; //true
 ```
 
 ### 原型链
-原型对象有它自己的原型。当一个属性被访问的时候并且不包含在当前对象中，JavaScript会沿着原型链向下查找直到找到被访问的属性，或者到达`null`为止。
+原型对象有它自己的原型。当一个属性被访问的时候并且不包含在当前对象中，JavaScript会沿着原型链向下查找直到找到被访问的属性，或者到达 `null` 为止。
 
 ### 只读
 原型只用于读取值。对象进行更改时，只会作用到当前对象，不会影响对象的原型；就算原型上有同名的属性，也是如此。
 
 ### 空对象
-正如我们看到的，空对象`{}`并不是真正意义上的空，因为它包含着指向`Object.prototype`的链接。为了创建一个真正的空对象，我们可以使用`Object.create(null)`。它会创建一个没有任何属性的对象。这通常用来创建一个图（图？这里我不知道怎么翻译比较好。。。也不是很理解）。
+正如我们看到的，空对象 `{}` 并不是真正意义上的空，因为它包含着指向 `Object.prototype` 的链接。为了创建一个真正的空对象，我们可以使用 `Object.create(null)` 。它会创建一个没有任何属性的对象。这通常用来创建一个图。
 
 ## 原始值和包装对象
-JavaScript treats primitives like objects in the sense that it allows access to properties. Primitives, of course, are not objects.在允许访问属性这一点上，JavaScript把原始值描述为对象。当然了，原始值并不是对象。
+在允许访问属性这一点上，JavaScript 把原始值描述为对象。当然了，原始值并不是对象。
 
 ```
 (1.23).toFixed(1); //"1.2"
@@ -127,11 +127,11 @@ JavaScript treats primitives like objects in the sense that it allows access to 
 true.toString(); //"true"
 ```
 
-为了允许访问原始值的属性，JavaScript创造了一个包装对象，然后销毁它。JavaScript引擎对创建包装和销毁包装对象的过程做了优化。
+为了允许访问原始值的属性， JavaScript 创造了一个包装对象，然后销毁它。JavaScript引擎对创建包装和销毁包装对象的过程做了优化。
 
 数值、字符串和布尔值都有等效的包装对象。跟别是：`Number`、`String `、`Boolean`。
 
-`null` 和 `undefined`原始值没有相应的包装对象并且不提供任何方法。
+`null` 和 `undefined` 原始值没有相应的包装对象并且不提供任何方法。
 
 ## 内置原型
 Numbers继承自`Number.prototype`，`Number.prototype`继承自`Object.prototype`。
@@ -141,41 +141,41 @@ var no = 1;
 no.__proto__ === Number.prototype; //true
 no.__proto__.__proto__ === Object.prototype; //true
 ```
-Arrays inherit from `Array.prototype`.Strings继承自`String.prototype`。Booleans继承自`Boolean.prototype`
+Strings 继承自 `String.prototype`。Booleans 继承自 `Boolean.prototype`
 
-函数都是对象，继承自`Function.prototype`。函数拥有bind()`、`apply()`和`call()`等方法。
+函数都是对象，继承自 `Function.prototype` 。函数拥有 `bind()`、`apply()` 和 `call()` 等方法。
 
-所有对象、函数和原始值（除了`null`和`undefined`）都从`Object.prototype`继承属性。他们都有`toString()`方法。
+所有对象、函数和原始值（除了 `null` 和 `undefined` ）都从 `Object.prototype` 继承属性。他们都有 `toString()` 方法。
 
-## 使用polyfill扩充内置对象
-JavaScript可以轻松地使用新功能扩充内置对象。
+## 使用 polyfill 扩充内置对象
+JavaScript 可以轻松地使用新功能扩充内置对象。
 
-polyfill就是一个代码片段，用于在不支持某功能的浏览器中实现该功能。
+polyfill 就是一个代码片段，用于在不支持某功能的浏览器中实现该功能。
 
 ### 实用工具
-举个例子，这个为`Object.assign()`写的[polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign#Polyfill)，如果它不可用，那么就在`Object`上添加一个新方法。
+举个例子，这个为 `Object.assign()` 写的[polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign#Polyfill)，如果它不可用，那么就在 `Object` 上添加一个新方法。
 
-为`Array.from()`写了类似的[polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#Polyfill)，如果它不可用，就在`Array`上添加一个新方法。
+为 `Array.from()` 写了类似的[polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from#Polyfill)，如果它不可用，就在 `Array` 上添加一个新方法。
 
 ### 原型
 新的方法可以被添加到原型。
 
-举个例子，`String.prototype.trim()`[polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim#Polyfill)让所有的字符串都能使用`trim()`方法。
+举个例子，`String.prototype.trim()` [polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim#Polyfill)让所有的字符串都能使用 `trim()` 方法。
 
 ```
 let text = "   A text  ";
 text.trim(); //"A text"
 ```
 
-`Array.prototype.find()`[polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find#Polyfill)让所有的数组都能使用`find()`方法。[polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/findIndex#polyfill)也是同样的。
+`Array.prototype.find()` [polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find#Polyfill)让所有的数组都能使用`find()`方法。[polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/findIndex#polyfill)也是同样的。
 
 ```
 let arr = ["A", "B", "C", "D", "E"];
 arr.indexOf("C"); //2
 ```
 
-### 单一继承
-`Ob`Object.create()`用特定的原型对象创建一个新对象。它用来做单一继承。[思考下面的例子](https://jsfiddle.net/cristi_salcescu/zu79cebu/):
+## 单一继承
+`Object.create()` 用特定的原型对象创建一个新对象。它用来做单一继承。[思考下面的例子](https://jsfiddle.net/cristi_salcescu/zu79cebu/):
 
 ```
 let bookPrototype = {
@@ -188,8 +188,8 @@ book.title = "JavaScript: The Good Parts";
 book.author = "Douglas Crockford";
 book.getFullTitle();//JavaScript: The Good Parts by Douglas Crockford
 ```
-### 多重继承
-`Object.assign()`从一个或多个对象拷贝属性到目标对象。它用来做多重继承。[看下面的例子](https://jsfiddle.net/cristi_salcescu/ghqsb9a3/):
+## 多重继承
+`Object.assign()` 从一个或多个对象拷贝属性到目标对象。它用来做多重继承。[看下面的例子](https://jsfiddle.net/cristi_salcescu/ghqsb9a3/):
 
 ```
 let authorDataService = { getAuthors : function() {} };
@@ -206,7 +206,7 @@ dataService.getUsers();
 ```
 
 ## 不可变对象
-`Object.freeze()`冻结一个对象。属性不能被添加、删除、更改。对象会变成不可变的。
+`Object.freeze()` 冻结一个对象。属性不能被添加、删除、更改。对象会变成不可变的。
 
 ```
 "use strict";
@@ -216,10 +216,10 @@ let book = Object.freeze({
 });
 book.title = "Other title";//Cannot assign to read only property 'title'
 ```
-`Object.freeze()`实行浅冻结。要深冻结，需要递归冻结对象的每一个属性。
+`Object.freeze()` 实行浅冻结。要深冻结，需要递归冻结对象的每一个属性。
 
 ## 拷贝
-`Object.assign()`被用作拷贝对象。
+`Object.assign()` 被用作拷贝对象。
 
 ```
 let book = Object.freeze({
@@ -229,7 +229,7 @@ let book = Object.freeze({
 let clone = Object.assign({}, book);
 ```
 
-`Object.assign()`执行浅拷贝，不是深拷贝。它拷贝对象的第一层属性。嵌套的对象会在原始对象和副本对象之间共享。
+`Object.assign()` 执行浅拷贝，不是深拷贝。它拷贝对象的第一层属性。嵌套的对象会在原始对象和副本对象之间共享。
 
 ## 对象字面量
 对象字面量提供一种简单、优雅的方式创建对象。
@@ -250,9 +250,9 @@ timer.start = function() { console.log("New implementation"); }
 
 ## Object.create()
 
-`Object.create()`和`Object.freeze()`一起能够解决最后两个问题。
+`Object.create()` 和 `Object.freeze()` 一起能够解决最后两个问题。
 
-First, I’ll create a frozen prototype `timerPrototype` with all the methods, then I’ll create and object that inherits from it.首先，我要使用所有方法创建一个冻结原型`timerPrototype`，然后创建对象去继承它。
+首先，我要使用所有方法创建一个冻结原型 `timerPrototype` ，然后创建对象去继承它。
 
 ```
 let timerPrototype = Object.freeze({
@@ -263,7 +263,7 @@ let timer = Object.create(timerPrototype);
 timer.__proto__ === timerPrototype; //true
 ```
 
-当原型被冻结，继承它的对象不能够更改其中的属性。现在，`start()`和`stop()`方法不能被重新定义。
+当原型被冻结，继承它的对象不能够更改其中的属性。现在，`start()` 和 `stop()` 方法不能被重新定义。
 
 ```
 "use strict";
@@ -287,7 +287,7 @@ function getTodos() {}
 let timer = new Timer(getTodos);
 ```
 
-所有的以`function`关键字定义的函数都可以作为构造函数。构造函数使用功能`new`调用。新对象将原型设定为`FunctionConstructor.prototype``
+所有的以 `function` 关键字定义的函数都可以作为构造函数。构造函数使用功能 `new` 调用。新对象将原型设定为 `FunctionConstructor.prototype`。
 
 ```
 let timer = new Timer();
@@ -304,7 +304,7 @@ Timer.prototype = Object.freeze({
 ```
 
 ### new操作符
-当执行`new Timer()`时，它与函数`newTimer()`作用相同:
+当执行 `new Timer()` 时，它与函数 `newTimer()` 作用相同:
 
 ```
 function newTimer(){
@@ -315,7 +315,7 @@ function newTimer(){
   return newObj;
 }
 ```
-使用`Timer.prototype`作为原型，创造了一个新对象。然后执行`Timer`函数并为新对象设置属性字段。
+使用 `Timer.prototype` 作为原型，创造了一个新对象。然后执行 `Timer` 函数并为新对象设置属性字段。
 
 ## 类
 ES2015为这一切带来了更好的语法糖。[看下面的例子](https://jsfiddle.net/cristi_salcescu/aLg8t632/):
@@ -332,21 +332,21 @@ class Timer{
 Object.freeze(Timer.prototype);
 ```
 
-使用class构建的对象将原型设置为`ClassName.prototype`。在使用类创建对象时，必须使用`new`操作符。
+使用 class 构建的对象将原型设置为 `ClassName.prototype` 。在使用类创建对象时，必须使用 `new` 操作符。
 
 ```
 let timer= new Timer();
 timer.__proto__ === Timer.prototype;
 ```
 
-class语法不会冻结原型，所以我们需要在之后进行操作。
+class 语法不会冻结原型，所以我们需要在之后进行操作。
 
 ```
 Object.freeze(Timer.prototype);
 ```
 
 ## 基于原型的继承
-在JavaScript中，对象继承自对象。
+在 JavaScript 中，对象继承自对象。
 
 构造函数和类都是用来创建原型对象的所有方法的语法糖。然后它创建一个继承自原型对象的新对象并为新对象设置数据字段。
 
@@ -355,7 +355,7 @@ Object.freeze(Timer.prototype);
 ### 没有封装
 基于原型的继承模式没有私有性。所有对象的属性都是公有的。
 
-`Object.keys()`返回一个包含所有属性键的数组。它可以用来迭代对象的所有属性。
+`Object.keys()` 返回一个包含所有属性键的数组。它可以用来迭代对象的所有属性。
 
 ```
 function logProperty(name){
@@ -365,7 +365,7 @@ function logProperty(name){
 Object.keys(obj).forEach(logProperty);
 ```
 
-模拟的私有模式包含使用`_`来标记私有属性，这样其他人会避免使用他们：
+模拟的私有模式包含使用 `_` 来标记私有属性，这样其他人会避免使用他们：
 
 ```
 class Timer{
@@ -377,7 +377,7 @@ class Timer{
 ```
 
 ## 工厂模式
-JavaScript提供一种使用工厂模式创建封装对象的新方式。
+JavaScript 提供一种使用工厂模式创建封装对象的新方式。
 
 ```
 function TodoStore(callback){
@@ -393,24 +393,24 @@ function TodoStore(callback){
 }
 ```
 
-`fn`变量是私有的。只有`start()`和`stop()`方法是公有的。`start()`和`stop()`方法不能被外界改变。这里没有使用`this`，所以这里没有`this`丢失上下文的问题。
+`fn` 变量是私有的。只有 `start()` 和 `stop()` 方法是公有的。`start()` 和 `stop()` 方法不能被外界改变。这里没有使用 `this` ，所以这里没有 `this` 丢失上下文的问题。
 
-对象字面量依然用于返回对象，但是这次它只包含函数。更重要的是，这些函数是共享相同私有状态的闭包。`Object.freeze()`被用来冻结公有API。
+对象字面量依然用于返回对象，但是这次它只包含函数。更重要的是，这些函数是共享相同私有状态的闭包。 `Object.freeze()` 被用来冻结公有 API。
 
-Timer对象的完整实现，请看[以下是一些具有封装功能的实用JavaScript对象](https://medium.freecodecamp.org/here-are-some-practical-javascript-objects-that-have-encapsulation-fc4c1a79c655).
+Timer 对象的完整实现，请看[以下是一些具有封装功能的实用JavaScript对象](https://medium.freecodecamp.org/here-are-some-practical-javascript-objects-that-have-encapsulation-fc4c1a79c655).
 
 ## 结论
-JavaScript像对象一样处理原始值、对象和函数。
+JavaScript 像对象一样处理原始值、对象和函数。
 
 对象本质上是动态的，可以用作图。
 
-Objects inherit from other objects. Constructor functions and class are sugar syntax for creating objects that inherit from other prototype objects.对象继承自其他对象。构造函数和类是创建从其他原型对象继承的对象的糖语法。
+对象继承自其他对象。构造函数和类是创建从其他原型对象继承的对象的糖语法。
 
-`Object.create()` can be used for single inheritance and `Object.assign()` for multiple inheritance.`Object.create()`可以用来单继承，`Object.assign()`用来多重继承。
+`Object.create()` 可以用来单继承，`Object.assign()` 用来多重继承。
 
 工厂函数可以构建封装对象。
 
-有关JavaScript功能的更多信息，请看：
+有关 JavaScript 功能的更多信息，请看：
 
 [Discover the power of first class functions](https://medium.freecodecamp.org/discover-the-power-of-first-class-functions-fd0d7b599b69)
 
