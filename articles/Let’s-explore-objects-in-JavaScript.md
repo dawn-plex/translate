@@ -8,11 +8,11 @@
 ---
 # 一起探讨 JavaScript 的对象
 
-对象是拥有原型“隐藏”属性的多个属性的动态集合。
+对象是多个属性的动态集合，它有一个链接着原型的隐藏属性（注：`__proto__`）。
 
-一个属性有一个 key 和一个 value 。
+一个属性拥有一个 key 和一个 value 。
 
-## 属性的键
+## 属性的key
 属性的 key 是一个唯一的字符串。
 
 访问属性有两种方式：点表示法和括号表示法。当使用点表示法，属性的 key 必须是有效的标识符。
@@ -54,10 +54,10 @@ obj[number1] === obj["1"]; //true
 
 在上面的示例中，对象 `number1` 被用作一个 key 。它会被转换为字符串，转换结果 “1” 被用作属性的 key 。
 
-## 属性的值
-属性的值可以是任意的原始值，对象，或函数。
+## 属性的value
+属性的value可以是任意的基础数据类型，对象，或函数。
 
-## 对象作为值
+## 对象作为value
 对象可以嵌套在其他对象里。[看下面这个例子](https://jsfiddle.net/cristi_salcescu/m0a65e2g/)：
 
 ```
@@ -79,7 +79,7 @@ app.authorService = { getAuthors : function() {} };
 app.bookService = { getBooks : function() {} };
 ```
 
-## 函数作为值
+## 函数作为value
 当一个函数被作为属性值，通常成为一个方法。在方法中，`this` 关键字代表着当前的对象。
 
 `this` ，会根据函数的调用方式有不同的值。了解更多关于`this` 丢失上下文的问题，可以查看[当"this"丢失上下文时应该怎么办](https://medium.freecodecamp.org/what-to-do-when-this-loses-context-f09664af076f)。
@@ -94,13 +94,13 @@ obj.otherMessage = "A new message"; //add new property
 delete obj.otherMessage; //delete property
 ```
 
-## 图
-我们可以把对象当做一个图。图的键就是对象的属性。
+## Map
+我们可以把对象当做一个Map。Map的key就是对象的属性。
 
 访问一个 key 不需要去扫描所有属性。访问的时间复杂度是 o(1)。
 
 ## 原型
-对象有一个链接着原型对象的”隐藏“属性 `__proto__`，对象是从这个原型对象中继承属性的。
+对象有一个链接着原型对象的“隐藏”属性 `__proto__`，对象是从这个原型对象中继承属性的。
 
 举个例子，使用对象字面量创建的对象有一个指向 `Object.prototype` 的链接:
 
@@ -116,7 +116,7 @@ obj.__proto__ === Object.prototype; //true
 原型只用于读取值。对象进行更改时，只会作用到当前对象，不会影响对象的原型；就算原型上有同名的属性，也是如此。
 
 ### 空对象
-正如我们看到的，空对象 `{}` 并不是真正意义上的空，因为它包含着指向 `Object.prototype` 的链接。为了创建一个真正的空对象，我们可以使用 `Object.create(null)` 。它会创建一个没有任何属性的对象。这通常用来创建一个图。
+正如我们看到的，空对象 `{}` 并不是真正意义上的空，因为它包含着指向 `Object.prototype` 的链接。为了创建一个真正的空对象，我们可以使用 `Object.create(null)` 。它会创建一个没有任何属性的对象。这通常用来创建一个Map。
 
 ## 原始值和包装对象
 在允许访问属性这一点上，JavaScript 把原始值描述为对象。当然了，原始值并不是对象。
@@ -348,8 +348,7 @@ Object.freeze(Timer.prototype);
 ## 基于原型的继承
 在 JavaScript 中，对象继承自对象。
 
-构造函数和类都是用来创建原型对象的所有方法的语法糖。然后它创建一个继承自原型对象的新对象并为新对象设置数据字段。
-
+构造函数和类都是用来创建原型对象的所有方法的语法糖。然后它创建一个继承自原型对象的新对象，并为新对象设置数据字段
 基于原型的继承具有保护记忆的好处。原型只创建一次并且由所有的实例使用。
 
 ### 没有封装
@@ -393,18 +392,18 @@ function TodoStore(callback){
 }
 ```
 
-`fn` 变量是私有的。只有 `start()` 和 `stop()` 方法是公有的。`start()` 和 `stop()` 方法不能被外界改变。这里没有使用 `this` ，所以这里没有 `this` 丢失上下文的问题。
+`fn` 变量是私有的。只有 `start()` 和 `stop()` 方法是公有的。`start()` 和 `stop()` 方法不能被外界改变。这里没有使用 `this` ，所以没有 `this` 丢失上下文的问题。
 
 对象字面量依然用于返回对象，但是这次它只包含函数。更重要的是，这些函数是共享相同私有状态的闭包。 `Object.freeze()` 被用来冻结公有 API。
 
-Timer 对象的完整实现，请看[以下是一些具有封装功能的实用JavaScript对象](https://medium.freecodecamp.org/here-are-some-practical-javascript-objects-that-have-encapsulation-fc4c1a79c655).
+Timer 对象的完整实现，请看[具有封装功能的实用JavaScript对象](https://medium.freecodecamp.org/here-are-some-practical-javascript-objects-that-have-encapsulation-fc4c1a79c655).
 
 ## 结论
 JavaScript 像对象一样处理原始值、对象和函数。
 
-对象本质上是动态的，可以用作图。
+对象本质上是动态的，可以用作Map。
 
-对象继承自其他对象。构造函数和类是创建从其他原型对象继承的对象的糖语法。
+对象继承自其他对象。构造函数和类是创建从其他原型对象继承的对象的语法糖。
 
 `Object.create()` 可以用来单继承，`Object.assign()` 用来多重继承。
 
