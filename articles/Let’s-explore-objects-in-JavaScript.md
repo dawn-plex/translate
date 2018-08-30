@@ -3,7 +3,7 @@
 > * 译文出自：[阿里云翻译小组](https://github.com/dawn-teams/translate)
 > * 译文链接：[https://github.com/dawn-teams/translate/blob/master/articles/Let’s-explore-objects-in-JavaScript.md](https://github.com/dawn-teams/translate/blob/master/articles/Let’s-explore-objects-in-JavaScript.md)
 > * 译者：灵沼
-> * 校对者：
+> * 校对者：也树
 
 ---
 # 一起探讨 JavaScript 的对象
@@ -95,7 +95,7 @@ delete obj.otherMessage; //delete property
 ```
 
 ## Map
-我们可以把对象当做一个 Map 。Map 的 key 就是对象的属性。
+我们可以把对象当做一个 Map。Map 的 key 就是对象的属性。
 
 访问一个 key 不需要去扫描所有属性。访问的时间复杂度是 o(1)。
 
@@ -134,7 +134,7 @@ true.toString(); //"true"
 `null` 和 `undefined` 原始值没有相应的包装对象并且不提供任何方法。
 
 ## 内置原型
-Numbers继承自`Number.prototype`，`Number.prototype`继承自`Object.prototype`。
+Numbers 继承自`Number.prototype`，`Number.prototype`继承自`Object.prototype`。
 
 ```
 var no = 1;
@@ -273,7 +273,7 @@ timer.start = function() { console.log("New implementation"); } //Cannot assign 
 `Object.create(timerPrototype)` 可以用来使用相同的原型构建更多对象。
 
 ## 构造函数
-最初，JavaScript语言提出构造函数作为这些的语法糖。[看下面的代码](https://jsfiddle.net/cristi_salcescu/az35x2qs/):
+最初，JavaScript 语言提出构造函数作为这些的语法糖。[看下面的代码](https://jsfiddle.net/cristi_salcescu/az35x2qs/):
 
 ```
 function Timer(callback){
@@ -303,7 +303,7 @@ Timer.prototype = Object.freeze({
 });
 ```
 
-### new操作符
+### new 操作符
 当执行 `new Timer()` 时，它与函数 `newTimer()` 作用相同:
 
 ```
