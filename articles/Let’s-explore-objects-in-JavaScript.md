@@ -2,8 +2,8 @@
 > * 原文作者：[Cristi Salcescu](https://medium.freecodecamp.org/@cristisalcescu)
 > * 译文出自：[阿里云翻译小组](https://github.com/dawn-teams/translate)
 > * 译文链接：[https://github.com/dawn-teams/translate/blob/master/articles/Let’s-explore-objects-in-JavaScript.md](https://github.com/dawn-teams/translate/blob/master/articles/Let’s-explore-objects-in-JavaScript.md)
-> * 译者：灵沼
-> * 校对者：也树
+> * 译者：[灵沼](https://github.com/su-dan)
+> * 校对者：[也树](https://github.com/xdlrt)[眠云](https://github.com/JeromeYangtao)
 
 ---
 # 一起探讨 JavaScript 的对象
@@ -38,7 +38,7 @@ french["thank you very much"] = "merci beaucoup";
 
 french["thank you very much"]; //"merci beaucoup"
 ```
-当属性的 key 是一个非字符串的值，它将会被转换为字符串（通过 `toString()` 方法，如果可用的话）。
+当属性的key是一个非字符串的值，会用toString()方法（如果可用的话）把它转换为字符串。
 
 ```
 let obj = {};
@@ -54,10 +54,10 @@ obj[number1] === obj["1"]; //true
 
 在上面的示例中，对象 `number1` 被用作一个 key 。它会被转换为字符串，转换结果 “1” 被用作属性的 key 。
 
-## 属性的 value
-属性的 value 可以是任意的基础数据类型，对象，或函数。
+## 属性的值
+属性的值可以是任意的基础数据类型，对象，或函数。
 
-## 对象作为 value
+## 对象作为值
 对象可以嵌套在其他对象里。[看下面这个例子](https://jsfiddle.net/cristi_salcescu/m0a65e2g/)：
 
 ```
@@ -79,7 +79,7 @@ app.authorService = { getAuthors : function() {} };
 app.bookService = { getBooks : function() {} };
 ```
 
-## 函数作为 value
+## 函数作为值
 当一个函数被作为属性值，通常成为一个方法。在方法中，`this` 关键字代表着当前的对象。
 
 `this` ，会根据函数的调用方式有不同的值。了解更多关于`this` 丢失上下文的问题，可以查看[当"this"丢失上下文时应该怎么办](https://medium.freecodecamp.org/what-to-do-when-this-loses-context-f09664af076f)。
