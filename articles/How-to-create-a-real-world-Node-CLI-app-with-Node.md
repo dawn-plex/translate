@@ -444,10 +444,6 @@
 
 * 应用退出时应当使用正确的退出码。
 
-<<<<<<< HEAD
 我希望你现在能够更好地了解如何使用 `Node` 创建和组织命令行应用。本文只是开篇之作，随后我们会继续深入理解如何优化设计，生成 `ascii art` 和添加色彩等。本文的源码可以在 [GitHub](https://github.com/timberio/outside-cli) 上获取到。
-=======
-我希望你现在能够更好地了解如何使用 `Node` 创建和组织命令行应用。本文只是开篇之作，随后我们会继续深入理解如何优化设计，生成 `ascii art` 和添加色彩等。本文的源码可以在 [GitHub](https://github.com/timberio/outside-cli) 上获取到。
->>>>>>> 翻译How-to-create-a-real-world-Node-CLI-app-with-Node 完成
 
 阿里云翻译小组
