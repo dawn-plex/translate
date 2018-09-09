@@ -3,7 +3,7 @@
 > * 译文出自：[阿里云翻译小组](https://github.com/dawn-teams/translate)
 > * 译文链接：[https://github.com/dawn-teams/translate/blob/master/articles/How-to-create-a-real-world-Node-CLI-app-with-Node.md](https://github.com/dawn-teams/translate/blob/master/articles/How-to-create-a-real-world-Node-CLI-app-with-Node.md)
 > * 译者：[靖鑫](https://github.com/luckyjing)
-> * 校对者：[]()
+> * 校对者：[也树](https://github.com/xdlrt)，[灵沼](https://github.com/su-dan)
 
 ---
 
@@ -11,13 +11,13 @@
 
 ![](https://img.alicdn.com/tfs/TB1a13bwTmWBKNjSZFBXXXxUFXa-1560-1024.png)
 
-在 `JavaScript` 的开发领域内，命令行应用还尚未获得足够的关注度。事实上，大部分开发工具都应该提供命令行界面来给像我们一样的开发者使用，并且用户体验应该与精心创建的 Web 应用程序相当，比如一个漂亮的设计，有用的菜单，清晰的错误反馈，加载提示和进度条等。
+在 `JavaScript` 的开发领域内，命令行应用还尚未获得足够的关注度。事实上，大部分开发工具都应该提供命令行界面来给像我们一样的开发者使用，并且用户体验应该与精心创建的 Web 应用程序相当，比如一个漂亮的设计，易用的菜单，清晰的错误反馈，加载提示和进度条等。
 
-目前并没有太多的实际教程来指导我们使用 `Node` 构建命令行界面，所以本文将是开篇之作，基于一个基本的 `hello world` 命令应用，逐步构建一个名为 `outside-cli` 的应用，它可以预测未来 10 天任何地方的天气情况。
+目前并没有太多的实际教程来指导我们使用 `Node` 构建命令行界面，所以本文将是开篇之作，基于一个基本的 `hello world` 命令应用，逐步构建一个名为 `outside-cli` 的应用，它可以提供当前的天气并预测未来 10 天任何地方的天气情况。
 
 ![](https://img.alicdn.com/tfs/TB15dfVwQ7mBKNjSZFyXXbydFXa-754-499.png)
 
-**提示**：有不少的库可以帮助你构建复杂的命令行应用，例如 [oclif](https://github.com/oclif/oclif)，[yargs](https://github.com/yargs/yargs) 和 [commander](https://github.com/tj/commander.js)，但是为了你更好地理解背后的原理，我们会尽可能保持外部依赖足够少。当然，我们假设你已经拥有了 `JavaScript` 和 `Node` 的基础知识。
+**提示**：有不少的库可以帮助你构建复杂的命令行应用，例如 [oclif](https://github.com/oclif/oclif)，[yargs](https://github.com/yargs/yargs) 和 [commander](https://github.com/tj/commander.js)，但是为了你更好地理解背后的原理，我们会保持外部依赖尽可能的少。当然，我们假设你已经拥有了 `JavaScript` 和 `Node` 的基础知识。
 
 ## 入门
 
@@ -45,11 +45,11 @@
     #!/usr/bin/env node
     require('../')()
 
-是不是之前从未见过 `#!/usr/bin/env node` ? 它被称为 [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix))。它指明了执行这个脚本的解释程序，而非 `shell` 。
+是不是之前从未见过 `#!/usr/bin/env node` ? 它被称为 [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix))。它告知系统这不是一个 `shell` 脚本并指明应该使用不同的解释程序。
 
 `bin` 文件需要保持简单，因为它的本意仅是用来调用主函数，我们所有的代码都应当放置在此文件之外，这样才可以保证模块化和可测试，同时也可以实现未来在其他的代码里被调用。
 
-为了能够直接运行 `bin` 文件，我们需要赋予正确的文件权限，如果你是在 `UNIX` 环境下，你只需要执行 `chomd +x bin/outside` 便可以，`Windows` 用户就只能靠自己了，建议使用 `Linux` 子系统。
+为了能够直接运行 `bin` 文件，我们需要赋予正确的文件权限，如果你是在 `UNIX` 环境下，你只需要执行 `chomd +x bin/outside`，`Windows` 用户就只能靠自己了，建议使用 `Linux` 子系统。
 
 接下来，我们将添加 `bin` 文件到 `package.json` 里，随后当我们全局安装此包时( `npm install -g outside-cli` )，`bin` 文件会被自动添加到系统目录内。
 
@@ -67,9 +67,9 @@
       "dependencies": {}
     }
 
-现在我们输入 `./bin/outside` ，就可以直接运行了，欢迎消息将会被打印出来，紧接着执行 `npm link` ，它将会在系统路径和你的二进制文件之间建立软连接，这样 `outside` 命令便可以在任何地方运行了。
+现在我们输入 `./bin/outside` ，就可以直接运行了，欢迎消息将会被打印出来，在你的项目根目录执行 `npm link`，它将会在系统路径和你的二进制文件之间建立软连接，这样 `outside` 命令便可以在任何地方运行了。
 
-命令行运行命令由参数和指令构成，参数（或「标志」）是指前缀为一个或两个连字符构成的值（例如  `-d`，`--debug` 或 `--env production` ），它对应用来说非常有用。指令是除了命令以外的其他值，它没有任何标志。
+CLI 应用程序由参数和指令构成，参数（或「标志」）是指前缀为一个或两个连字符构成的值（例如  `-d`，`--debug` 或 `--env production` ），它对应用来说非常有用。指令是指没有标志的其他所有值。
 
 与指令不同，参数并不要求特定的顺序，举个例子，运行 `outside today Brooklyn`，必须约定第二个指令只能代表地域，使用 `--` 则不然，运行 `outside today --location Brooklyn`，可以方便地添加更多的选项。
 
@@ -92,11 +92,11 @@
 
 ## 参数语法
 
-可以通过[这篇文章](https://www.gnu.org/software/libc/manual/html_node/Argument-Syntax.html)帮助你更好地理解参数语法。基本上，一个参数可以有一个或者两个连字符，然后紧跟着是它对应的值，在不填写时它的值默认为 `true`, 单连字符参数还可以使用缩写的格式（ `-a -b -c` 或者 `-abc` 都对应着 `{ a: true, b: true, c: true }` ）。
+可以通过[这篇文章](https://www.gnu.org/software/libc/manual/html_node/Argument-Syntax.html)帮助你更好地理解参数语法。基本上，一个参数可以有一个或者两个连字符，然后紧跟着是它对应的值，在不填写时它的值默认为 `true`, 单连字符参数还可以使用缩写的格式（ `-a -b -c` 或者 `-abc` 都对应着 `{ a: true, b: true, c: true }` ）。
 
-**如果参数值包含特殊字符或者空格，则必须使用引号包裹着**。例如 `--foo bar` `{ : ['baz'], foo: 'bar' }`，`--foo "bar baz"` 对应 `{ foo: 'bar baz' }`。
+**如果参数值包含特殊字符或者空格，则必须使用引号包裹着**。例如 `--foo bar` 对应着 `{ : ['baz'], foo: 'bar' }`，`--foo "bar baz"` 对应 `{ foo: 'bar baz' }`。
 
-分割每个指令的代码，在其被调用时再加载至内存是一个最佳实践，这有助于缩短启动时间，避免不必要的加载。在主指令代码里简单地使用 `switch` 就可以实现此实践了。在这种设置下，我们需要把每个指令写到独立的文件里，并且导出一个函数，与此同时，我们把参数传递给每个指令函数用以在后期使用。
+分割每个指令的代码，在其被调用时再加载至内存是一个最佳实践，这有助于缩短启动时间，避免不必要的加载。在主指令代码里简单地使用 `switch` 就可以实现此实践了。在这种设置下，我们需要把每个指令写到独立的文件里，并且导出一个函数，与此同时，我们把参数传递给每个指令函数用以在后期使用。
 
 **index.js**
 
@@ -122,9 +122,9 @@
       console.log('today is sunny')
     }
 
-现在如果执行 `outside today`，你会看到输出 `today is sunny`，如果执行 `outside foobar`，会输出 `"foobar" is not a valid command`。目前的原型已经很不错了，接下来我们需要添加天气的API来获取真实数据。
+现在如果执行 `outside today`，你会看到输出 `today is sunny`，如果执行 `outside foobar`，会输出 `"foobar" is not a valid command`。目前的原型已经很不错了，接下来我们需要通过 API 来获取天气的真实数据。
 
-每个命令行应用里都应该包含一些参数：`help`，`--help` 和 `-h` 用来展示帮助清单；`--version` 和 `-v` 用来显示当前应用的版本信息。当指令没有指定时，我们也应当默认展示帮助清单。
+有一些命令和参数是我们希望在每个命令行应用中都包含的：`help`，`--help` 和 `-h` 用来展示帮助清单；`--version` 和 `-v` 用来显示当前应用的版本信息。当指令没有指定时，我们也应当默认展示帮助清单。
 
 `Minimist` 会自动解析参数为键值对，因此运行 `outside --version` 会使得 `args.version` 等于 `true`。那么在程序里通过设置 `cmd` 变量来保存 `help` 和 `version` 参数的判定结果，然后在 `switch` 语句中添加两个处理语句，就可以实现上述功能了。
 
@@ -361,7 +361,7 @@
 
 本篇文章我们并不会详细介绍错误处理的最佳方案（后面的教程里会介绍），但是最重要的是要记住使用正确的退出码。
 
-如果你的命令行应用出现了严重错误，你应当使用 `process.exit(1)`，终端会感知到程序并未完全执行，此时便可以通过 CI 程序来对外通知。
+如果你的命令行应用出现了严重错误，你应当使用 `process.exit(1)`，终端会感知到程序并未完全执行，此时便可以通过 CI 程序来对外通知。
 
 接下来我们创建一个工具函数来实现当运行一个不存在的指令时，程序会抛出正确的退出码。
 
@@ -420,7 +420,7 @@
       }
     }
 
-* 设置 `engine` 可以确保使用者拥有一个较新的 `Node` 版本。因为我们未经编译直接使用了 `async/await`，所以我们要求 `Node` 版本 必须在 8.0 及以上。
+* 设置 `engine` 可以确保使用者拥有一个较新的 `Node` 版本。因为我们未经编译直接使用了 `async/await`，所以我们要求 `Node` 版本 必须在 8.0 及以上。
 
 * 设置 `preferGlobal` 将会在安装时提示使用者本库最好全局安装而非作为局部依赖安装。
 
@@ -445,5 +445,3 @@
 * 应用退出时应当使用正确的退出码。
 
 我希望你现在能够更好地了解如何使用 `Node` 创建和组织命令行应用。本文只是开篇之作，随后我们会继续深入理解如何优化设计，生成 `ascii art` 和添加色彩等。本文的源码可以在 [GitHub](https://github.com/timberio/outside-cli) 上获取到。
-
-阿里云翻译小组
