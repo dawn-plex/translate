@@ -3,21 +3,21 @@
 > * 译文出自：[阿里云翻译小组](https://github.com/dawn-teams/translate)
 > * 译文链接：[https://github.com/dawn-teams/translate/blob/master/articles/How-to-build-an-rpc-based-api-with-nodejs.md](https://github.com/dawn-teams/translate/blob/master/articles/How-to-build-an-rpc-based-api-with-nodejs.md)
 > * 译者：[牧曈](https://github.com/jeasonstudio)
-> * 校对者：[]()
+> * 校对者：[也树](https://github.com/xdlrt)，[灵沼](https://github.com/su-dan)
  ---
 
 # 如何使用 NodeJS 构建基于 RPC 的 API 系统
 
-API 在它存在的很长时间内都不断地侵蚀着我们的开发工作。无论是构建仅供其他微服务访问的微服务，还是构建对外暴露的服务，你都需要开发 API。
+API 在它存在的很长时间内都不断地侵蚀着我们的开发工作。无论是构建仅供其他微服务访问的微服务还是构建对外暴露的服务，你都需要开发 API。
 
-目前，大多数 API 都基于 REST 规范，REST 很简单且容易，并且建立在 HTTP 协议之上。 但是在很大程度上，REST 可能并不适合你。许多公司比如 Uber，facebook，Google，netflix 等都构建了自己的服务间内部通信协议，这里的关键问题在于何时做，而不是应不应该做。
+目前，大多数 API 都基于 REST 规范，REST 规范通俗易懂，并且建立在 HTTP 协议之上。 但是在很大程度上，REST 可能并不适合你。许多公司比如 Uber，facebook，Google，netflix 等都构建了自己的服务间内部通信协议，这里的关键问题在于何时做，而不是应不应该做。
 
 如果你想继续了解 RPC，想了解如果基于 nodejs 实现 `json over http`？请继续阅读本文。
 
-\## 阅读本教程前应确保一下两点
+\## 阅读本教程前应确保以下两点
 
-- 你应至少具有 Node.js 实际使用的基本知识
-- 安装了 Node.js 版本 > `v4.0.0`，以获得 es6 支持。
+- 你至少应该具备 Node.js 的实战经验
+- 为了获得 ES6 支持，需要安装 Node.js `v4.0.0` 以上版本。
 
 ## 设计原则
 
@@ -27,8 +27,8 @@ API 在它存在的很长时间内都不断地侵蚀着我们的开发工作。�
 
 ## 现在开始
 
-本教程的完整源代码可以在 [Github](https://github.com.mofax/noderpc) 上找到，因此您可以 clone 下来方便查看。
-首先，我们需要首先定义我们的类型，以及将对它们进行操作的方法（这些将是通过 API 调用的相同方法）。
+本教程的完整源代码可以在 [Github](https://github.com.mofax/noderpc) 上找到，因此你可以 clone 下来方便查看。
+首先，我们需要首先定义类型以及将对它们进行操作的方法（这些将是通过 API 调用的相同方法）。
 
 创建一个新目录，并在新目录中创建两个文件，`types.js` 和 `methods.js`。 如果你正在使用 linux 或 mac 终端，可以键入以下命令。
 
