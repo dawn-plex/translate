@@ -4,7 +4,7 @@
 > * 译文链接：[https://github.com/dawn-teams/translate/blob/master/articles/How-to-build-an-rpc-based-api-with-nodejs.md](https://github.com/dawn-teams/translate/blob/master/articles/How-to-build-an-rpc-based-api-with-nodejs.md)
 > * 译者：[牧曈](https://github.com/jeasonstudio)
 > * 校对者：[也树](https://github.com/xdlrt)，[灵沼](https://github.com/su-dan)
- ---
+---
 
 # 如何使用 NodeJS 构建基于 RPC 的 API 系统
 
@@ -12,9 +12,9 @@ API 在它存在的很长时间内都不断地侵蚀着我们的开发工作。�
 
 目前，大多数 API 都基于 REST 规范，REST 规范通俗易懂，并且建立在 HTTP 协议之上。 但是在很大程度上，REST 可能并不适合你。许多公司比如 Uber，facebook，Google，netflix 等都构建了自己的服务间内部通信协议，这里的关键问题在于何时做，而不是应不应该做。
 
-如果你想继续了解 RPC，想了解如果基于 nodejs 实现 `json over http`？请继续阅读本文。
+假设你想使用传统的 RPC 方式，但是你仍然想通过 http 格式传递 json 数据，这时要怎么通过 node.js 来实现呢？请继续阅读本文。
 
-\## 阅读本教程前应确保以下两点
+**阅读本教程前应确保以下两点**
 
 - 你至少应该具备 Node.js 的实战经验
 - 为了获得 ES6 支持，需要安装 Node.js `v4.0.0` 以上版本。
@@ -371,4 +371,4 @@ server.listen(PORT);
 
 server 将会根据你提交的请求创建一个新用户并返回响应结果。一个基于 RPC、文档完善的 API 系统已经搭建完成了。
 
-\## 注意，我们尚未对本教程接口进行任何参数验证，你在调用测试的时候必须手动保证数据正确性。
+注意，我们尚未对本教程接口进行任何参数验证，你在调用测试的时候必须手动保证数据正确性。
