@@ -3,42 +3,41 @@
 > * 译文出自：[阿里云翻译小组](https://github.com/dawn-teams/translate)
 > * 译文链接：[https://github.com/dawn-teams/translate/blob/master/articles/How-to-build-an-rpc-based-api-with-nodejs.md](https://github.com/dawn-teams/translate/blob/master/articles/How-to-build-an-rpc-based-api-with-nodejs.md)
 > * 译者：[牧曈](https://github.com/jeasonstudio)
-> * 校对者：[]()
- ---
+> * 校对者：[也树](https://github.com/xdlrt)，[灵沼](https://github.com/su-dan)
+---
 
-# How to build an RPC based API with node.js
+# 如何使用 NodeJS 构建基于 RPC 的 API 系统
 
-APIs are eating the development world, they have been for a while. Whether you are building a microservice for access only by other microservices or you are building something exposed to the world, at some point, you may need to develop an api.
+API 在它存在的很长时间内都不断地侵蚀着我们的开发工作。无论是构建仅供其他微服务访问的微服务还是构建对外暴露的服务，你都需要开发 API。
 
-These days, most APIs under development are most likely rest based, rest is simple, easy, and built on top of http, the protocol of the web. It's ever, very likely, that at a significant level of scale, rest might not work well for you, and judging by the fact that many companies, uber, facebook, google, netflix have built their own protocols for internal communication between services, it's likely a matter of when, not if.
+目前，大多数 API 都基于 REST 规范，REST 规范通俗易懂，并且建立在 HTTP 协议之上。 但是在很大程度上，REST 可能并不适合你。许多公司比如 Uber，facebook，Google，netflix 等都构建了自己的服务间内部通信协议，这里的关键问题在于何时做，而不是应不应该做。
 
-Assuming, you want to go old school, with RPC, but you want to stick with our friend, `json over http` how would you go about it with node.js? Well that's what this article is here to discover.
+假设你想使用传统的 RPC 方式，但是你仍然想通过 http 格式传递 json 数据，这时要怎么通过 node.js 来实现呢？请继续阅读本文。
 
-\##Assumptions This tutorial assumes
+**阅读本教程前应确保以下两点**
 
-- You have at least basic knowledge on practical use of Node.js
-- You have Node.js > `v4.0.0` installed on your system, for considerable es6 support.
+- 你至少应该具备 Node.js 的实战经验
+- 为了获得 ES6 支持，需要安装 Node.js `v4.0.0` 以上版本。
 
-## Design rules
+## 设计原则
 
-specific to this tutorial, we'll set up a two constraints for our api as follows
+在本教程中，我们将为 API 设置如下两个约束：
+- 保持简单（没有外部包装和复杂的操作）
+- API 和接口文档，应该一同编写
 
-- Keep it simple (so no external packages, and complicated operations)
-- Self Documenting, the api and it's documentation, should grow together
+## 现在开始
 
-## So, Let's Begin...
+本教程的完整源代码可以在 [Github](https://github.com.mofax/noderpc) 上找到，因此你可以 clone 下来方便查看。
+首先，我们需要首先定义类型以及将对它们进行操作的方法（这些将是通过 API 调用的相同方法）。
 
-The full source code for this tutorial is available on [Github](https://github.com.mofax/noderpc), so you can clone it just to get things going faster.
-Ok, With everything in mind, we need to start by defining our types, and the methods that will operate on them, (these will be the same methods called via the api).
-
-We'll create a new directory, and inside the new directory, create two files, `types.js`and `methods.js`. Type the following commands if you're running a linux or a mac terminal. On windows things might differ, but you can install [mintty](https://www.google.com/search?q=mintty) to access the same commands on a windows terminal.
+创建一个新目录，并在新目录中创建两个文件，`types.js` 和 `methods.js`。 如果你正在使用 linux 或 mac 终端，可以键入以下命令。
 
 ```bash
 mkdir noderpc && cd noderpc
 touch types.js methods.js
 ```
 
-Inside our types.js file, we'll have the following,
+在 `types.js` 文件中，输入以下内容。
 
 ```javascript
 'use strict';
@@ -66,9 +65,9 @@ let types = {
 module.exports = types;
 ```
 
-Just from first sight, it's really simple, we have a key-value container to hold our types, the keys being the name of the type, and the value being it's definition. The definition, includes a description, which is human friendly text, and is mainly there for documentation purposes, then we have it's props, which describes the individual properties, and is designed both for documentation, and for validation. We them expose this container to the world via `module.exports`
+乍一看很简单，用一个 `key-value` 对象来保存我们的类型，`key` 是类型的名称，`value` 是它的定义。该定义包括描述（是一段可读文本，主要用于生成文档），在 props 中描述了各个属性，这样设计主要用于文档生成和验证，最后通过 `module.exports` 暴露出来。
 
-Moving on to methods.js, we'll have this
+在 `methods.js` 有以下内容。
 
 ```javascript
 'use strict';
@@ -132,15 +131,13 @@ let methods = {
 module.exports = methods;
 ```
 
-You'll notice that, it's almost similar to the types module by design, the major difference however, is that each method definition, includes a function called `exec`that returns a promise. This function is what exposes the functionality of the method, and while the other properties can be exposed to users, this has to be abstracted by the api.
-
-You will, also notice that, at the top of methods.js we have required a module `db.js`that we are yet to create, so let's go ahead and create it.
+可以看到，它和类型模块的设计非常类似，但主要区别在于每个方法定义中都包含一个名为 `exec` 的函数，它返回一个 `Promise`。 这个函数暴露了这个方法的功能，虽然其他属性也暴露给了用户，但这必须通过 API 抽象。
 
 #### db.js
 
-Our api will need to store data somewhere, but, because for the purposes of this tutorial we don't want to complicate things by unnecessary `npm installs` we are going to create a really simple, and naive, in-memory key value store, of cause because it's behind it's own abstraction, you can alsways change how data is stored behind the scenes.
+我们的 API 需要在某处存储数据，但是在本教程中，我们不希望通过不必要的 `npm install` 使教程复杂化，我们创建一个非常简单、原生的内存中键值存储，因为它的数据结构由你自己设计，所以你可以随时改变数据的存储方式。
 
-With that out of the way, let's have this inside `db.js`
+在 `db.js` 中包含以下内容。
 
 ```javascript
 'use strict';
@@ -196,13 +193,13 @@ function proc(container) {
 module.exports = db;
 ```
 
-The important thing here is the `proc` function. (I don't even know why I called it that!). I takes an object, and wraps it inside a closure with a set of functions around it, so that you can add, edit and remove values on that object. You should read about javascript closures if you are not yet conversant with them, they're really cool.
+其中比较重要是 `proc` 函数。通过获取一个对象，并将其包装在一个带有一组函数的闭包中，方便在该对象上添加，编辑和删除值。如果你对闭包不够了解，应该提前阅读关于 `JavaScript` 闭包的内容。
 
-So, we now basically have our application set up, We can store and retrieve data, and can implement functions to operate on this data, what we now need to do is to expose this functionality over the network. As such, the last piece is to implement a http server.
+所以，我们现在基本上已经完成了程序功能，我们可以存储和检索数据，并且可以实现对这些数据进行操作，我们现在需要做的是通过网络公开这个功能。 因此，最后一部分是实现 HTTP 服务。
 
-This is the point where most of us would have wished to use express, but we don't want that, so we're going to use the http module that ships with node, and implement a very simple routing table around it.
+这是我们大多数人希望使用express的地方，但我们不希望这样，所以我们将使用随节点一起提供的http模块，并围绕它实现一个非常简单的路由表。
 
-And, as expected, let's go ahead and create our `server.js` file. This is the file that sort of binds everything together, so we'll go step by step, at the top of the file, we'll have this
+正如预期的那样，我们继续创建 `server.js` 文件。在这个文件中我们把所有内容关联在一起，如下所示。
 
 ```javascript
 'use strict';
@@ -216,9 +213,9 @@ let server = http.createServer(requestListener);
 const PORT = process.env.PORT || 9090;
 ```
 
-What we are doing at the very beginning of the file is to import all the things we'll need, the we use `http.createServer` to create a http server. The value `requestListener` is a callback function, that we'll define later. Then of course, we have the port on which the server will listen.
+文件的开头部分引入我们所需要的内容，使用 `http.createServer` 来创建一个 HTTP 服务。`requestListener` 是一个回调函数，我们稍后定义它。 并且我们确定下来服务器将侦听的端口。
 
-Just after this code, let us have our routing table, that defines the different url paths that our application will respond to.
+在这段代码之后我们来定义路由表，它规定了我们的应用程序将响应的不同 URL 路径。
 
 ```javascript
 // we'll use a very very very simple routing mechanism
@@ -293,13 +290,13 @@ let routes = {
 };
 ```
 
-This is a very important part of the application, since it sets up the actual interface. We have a set of endpoints, each with with a handler function that is called when that endpoint is hit. Each handler function has to return a Promise, as a design principle.
+这是整个程序中非常重要的一部分，因为它提供了实际的接口。 我们有一组 endpoint，每个 endpoint 都对应一个处理函数，在路径匹配时被调用。根据设计原则每个处理函数都必须返回一个 Promise。
 
-The RPC endpoint, gets a json object containing the requests, each request is then resolved into a method in the `methods.js` file, the `exec` function on that method is called, and the results passed back. Or, an Error is thrown.
+RPC endpoint 获取一个包含请求内容的 json 对象，然后将每个请求解析为 `methods.js` 文件中的对应方法，调用该方法的 `exec` 函数，并将结果返回，或者抛出错误。
 
-The describe endpoint, scans through the descriptions of both the methods and the types, and returns that information to the caller. Makes it easy for the consumers of your api to always know how to use it, even as it is actively developed.
+describe endpoint 扫描方法和类型的描述，并将该信息返回给调用者。让使用 API 的开发者能够轻松地知道如何使用它。
 
-Now let's add that function `requestListener` that we talked about ealier, then start up the server, and this is it
+现在让我们添加我们之前讨论过的函数 `requestListener`，然后就可以启动服务。
 
 ```javascript
 // request Listener
@@ -359,9 +356,9 @@ function requestListener(request, response) {
 server.listen(PORT);
 ```
 
-This function is called everytime there is a new request, we wait on the data coming in, after which, we look at the path, and match it to a handler on the routing table. We then start up the server using `server.listen`.
+每当有新请求时调用此函数并等待拿到数据，之后查看路径，并根据路径匹配到路由表上的对应处理方法。然后使用 `server.listen` 启动服务。
 
-There we have it, now you can run `node server.js` from inside the directory to start up the server, then using postman, or your api tool of choice, send a request to `http://localhost:{PORT}/rpc` containing the following json body
+现在我们可以在目录下运行 `node server.js` 来启动服务，然后使用 postman 或你熟悉的 API 调试工具，向 `http://localhost{PORT}/rpc` 发送请求，请求体中包含以下 JSON 内容。
 
 ```json
 {
@@ -372,6 +369,6 @@ There we have it, now you can run `node server.js` from inside the directory to 
 }
 ```
 
-The server should create the new user an respond with the results. There you go, a working RPC based, documentable api, to give to your users.
+server 将会根据你提交的请求创建一个新用户并返回响应结果。一个基于 RPC、文档完善的 API 系统已经搭建完成了。
 
-\##Note It's good to note that we have not done any validations on this tutorial, something you must always do on any incoming data.
+注意，我们尚未对本教程接口进行任何参数验证，你在调用测试的时候必须手动保证数据正确性。
