@@ -7,7 +7,7 @@
 
 ---
 
-# JavaScript 计时器一览
+# JavaScript 计时器之旅
 
 突击小测验: JavaScript 各种定时器之间的区别是什么?
 
