@@ -3,7 +3,7 @@
 > * 译文出自：[阿里云翻译小组](https://github.com/dawn-teams/translate)
 > * 译文链接：
 > * 译者：[灵沼](https://github.com/su-dan)
-> * 校对者：
+> * 校对者：[也树](https://github.com/xdlrt)、[靖鑫](https://github.com/luckyjing)、[眠云](https://github.com/JeromeYangtao)
 
 ---
 
@@ -84,7 +84,7 @@ Bottom line: use `setImmediate` if you know what you’re doing and you’re try
 
 现在，我们有一个最重要的 `setTimeout` 替代品，一个真正挂在浏览器渲染循环中的定时器。顺便说一句，如果你不知道浏览器事件循环机制，我强烈推荐 [Jake Archibald 的这个演讲](https://youtu.be/cCOL7MC4Pl0)。
 
-`requestAnimationFrame` 基本上是这样工作的：和 `setTimeout` 有点像，除了等待一些无法预测的时间（4好卖，16毫秒，1秒等），它在浏览器下一次样式/布局计算之前执行。现在，像 Jake 在他的演讲中指出的一样，这里有一个小问题，在 Safari 、IE 和 Edge 18以下版本的浏览器中，他在样式/布局计算之后执行。但是让我们忽略它，因为这不是一个很重要的细节。
+`requestAnimationFrame` 基本上是这样工作的：它虽然和 `setTimeout` 有点像，但是它会在浏览器下次重绘时调用，而非等待一些无法预测的时间（4毫秒，16毫秒，1秒等）。现在，像 Jake 在他的演讲中指出的一样，这里有一个小问题，在 Safari 、IE 和 Edge 18以下版本的浏览器中，他在样式/布局计算之后执行。但是让我们忽略它，因为这不是一个很重要的细节。
 
 我认为 `requestAnimationFrame` 的使用方式是这样的：无论什么时候，只要我知道我将要修改浏览器的样式或布局——举个例子，改变 CSS 属性或启动一个动画——我就会把它放在 `requestAnimationFrame`（这里缩写为 `rAF`）。这样确保了几件事情：
 
