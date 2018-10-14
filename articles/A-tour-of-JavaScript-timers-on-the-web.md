@@ -1,7 +1,7 @@
-> * 原文地址：[A tour of JavaScript timers on the web](https://scotch.io/@alloys/how-to-build-an-rpc-based-api-with-nodejs)
-> * 原文作者：[Nolan Lawson](https://github.com/nolanlawson)
+> * 原文地址：[A tour of JavaScript timers on the web](https://nolanlawson.com/2018/09/01/a-tour-of-javascript-timers-on-the-web/)
+> * 原文作者：[Nolan Lawson](https://nolanlawson.com/about/)
 > * 译文出自：[阿里云翻译小组](https://github.com/dawn-teams/translate)
-> * 译文链接：
+> * 译文链接：[https://github.com/dawn-teams/translate/blob/master/articles/A-tour-of-JavaScript-timers-on-the-web.md](https://github.com/dawn-teams/translate/blob/master/articles/A-tour-of-JavaScript-timers-on-the-web.md)
 > * 译者：[灵沼](https://github.com/su-dan)
 > * 校对者：[也树](https://github.com/xdlrt)、[靖鑫](https://github.com/luckyjing)、[眠云](https://github.com/JeromeYangtao)
 
