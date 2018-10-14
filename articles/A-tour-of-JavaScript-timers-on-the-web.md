@@ -78,7 +78,7 @@ for (var i = 0; i < 100; i++) {
 
 而且，`setImmediate` 存在于 Node 中这一事实意味着许多 “Node-polyfilled” 代码在浏览器中使用它，但是并不真正知道它在做什么。Node 中 `process.nextTick` 和 `setImmediate`的区别令人很困惑，甚至 [Node 的官方文档](https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/)都说名字应该交换。（然而为了这篇文章的初衷，我会把重心放在浏览器而不是 Node 上，因为我不是一个 Node 专家）。
 
-Bottom line: use `setImmediate` if you know what you’re doing and you’re trying to optimize input performance for IE. If not, then just don’t bother. (Or only use it in Node.)最低原则：如果你知道你要做什么并且尝试优化 IE 的输入性能，就使用 `setImmediate`。如果不是，就不用麻烦了。（或者只在 Node 中使用）
+最低原则：如果你知道你要做什么并且尝试优化 IE 的输入性能，就使用 `setImmediate`。如果不是，就不用麻烦了。（或者只在 Node 中使用）
 
 ## requestAnimationFrame
 
