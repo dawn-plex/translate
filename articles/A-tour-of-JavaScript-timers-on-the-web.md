@@ -20,7 +20,7 @@
 
 更具体地讲，如果你立刻对这些计时器进行排序，知道他们触发的顺序是什么吗？
 
-如果不能，那你可能并不是单独的一个。我已经写 JavaScript 和做编程许多年，曾经为一家浏览器厂商工作两年以上，直到最近，我才真正了解了这些计时器以及如何使用它们。
+如果不能，那你可能并不孤独。我已经写 JavaScript 和做编程许多年，曾经为一家浏览器厂商工作超过两年，直到最近，我才真正了解了这些计时器以及如何使用它们。
 
 在这篇文章中，我将高度概述这些定时器工作方式以及使用它们的时机，并且会一起介绍 Loadash 很有用的 `debounce()` 和 `throttle()` 函数。
 
@@ -28,7 +28,7 @@
 
 让我们先从这里开始，因为它大概是最简单的了。一个 [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) 回调也被称为 “microtask”，它以与 [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) 回调相同的频率运行。如果 [queueMicrotask()](https://github.com/whatwg/html/commit/9d7cf125f960e6bb8d9b7c9456595f505f2e9d4b) 没有被规范排除并且进入浏览器领域，它也会有同样的结果。
 
-[我已经写过很多关于 promise 的文章](https://pouchdb.com/2015/05/18/we-have-a-problem-with-promises.html)。然而值得一提的是，promises 有一个很容易被误解的地方是它们不会给浏览器留空闲的时间。那是因为处于异步回调队列中，但是并不意味着浏览器可以进行渲染，或者处理输入，或者做其他我们希望浏览器做的工作。
+[我已经写过很多关于 promise 的文章](https://pouchdb.com/2015/05/18/we-have-a-problem-with-promises.html)。然而值得一提的是，Promise 有一个很容易被误解的地方是它们不会给浏览器留空闲的时间。那是因为处于异步回调队列中，但是并不意味着浏览器可以进行渲染，或者处理输入，或者做其他我们希望浏览器做的工作。
 
 举个例子，假设我们有一个阻塞主线程1秒钟的函数：
 
@@ -89,7 +89,7 @@ Bottom line: use `setImmediate` if you know what you’re doing and you’re try
 我认为 `requestAnimationFrame` 的使用方式是这样的：无论什么时候，只要我知道我将要修改浏览器的样式或布局——举个例子，改变 CSS 属性或启动一个动画——我就会把它放在 `requestAnimationFrame`（这里缩写为 `rAF`）。这样确保了几件事情：
 
 1. 我不太可能打乱布局，因为所有的DOM的变化都在排队和协调。
-2. 我的代码会自然地去适应浏览器的性能特点。举个例子，如果这里有一个低成本的设备正在试图渲染一些DOM元素，rAF 会自然地从通常的16.7毫秒（在60赫兹的屏幕上）时间间隔慢下来，因此，它不会像运行了大量 setTimeout 或 setInterval 的一样让设备崩溃。
+2. 我的代码会自然地去适应浏览器的性能特点。举个例子，如果这里有一个配置较低的设备正在试图渲染一些DOM元素，rAF 会自然地从通常的16.7毫秒（在60赫兹的屏幕上）时间间隔慢下来，因此，它不会像运行了大量 setTimeout 或 setInterval 的一样让设备崩溃。
 
 这就是为什么不依赖 CSS 转换或 keyframes 的动画库的原因，比如  [GreenSock](https://greensock.com/) or [React Motion](https://github.com/chenglou/react-motion)，通常会在 rAF 回调中更改。如果一个元素在 `opacity: 0` 和 `opacity: 1` 之间进行动画转换，那么排队等待十亿次回调来对每个可能的中间状态进行处理是没有意义的，包括 `opacity: 0.0000001` 和 `opacity: 0.9999999`。
 
@@ -110,7 +110,7 @@ Dan Abramov 在[2018 冰岛 JSConf 上有一个精彩讲话](https://youtu.be/v6
 
 在 Pinafore 中，输入框下面的小提示条和“剩余字符”提示会随着输入而更新。
 
-One thing I’ve noticed about `rIC`, though, is that it’s a little finicky in Chrome. In Firefox it seems to fire whenever I would, intuitively, think that the browser is “idle” and ready to run some code. (Same goes for the polyfill.) In mobile Chrome for Android, though, I’ve noticed that whenever I scroll with touch scrolling, it might delay `rIC` for several seconds even after I’m done touching the screen and the browser is doing absolutely nothing. (I suspect the issue I’m seeing is [this one](https://bugs.chromium.org/p/chromium/issues/detail?id=811451).)我注意到 `rIC` 在 Chrome 中有点瑕疵。在Firefox 中，每当我直觉的认为浏览器是空闲并准备运行一些代码的时候，它就会运行。（在 pollyfill 中也是这样。）不过在 Chrome 的安卓移动模式中，我注意到，每当我触摸滚动的时候，它就会将 `rIC` 延迟几秒钟，即使在我刚触摸完屏幕，浏览器也什么都不会做。（我怀疑我看到的问题是[这个](https://bugs.chromium.org/p/chromium/issues/detail?id=811451).）
+我注意到 `rIC` 在 Chrome 中有点瑕疵。在Firefox 中，每当我直觉的认为浏览器是空闲并准备运行一些代码的时候，它就会运行。（在 pollyfill 中也是这样。）不过在 Chrome 的安卓移动模式中，我注意到，每当我触摸滚动的时候，它就会将 `rIC` 延迟几秒钟，即使在我刚触摸完屏幕，浏览器也什么都不会做。（我怀疑我看到的问题是[这个](https://bugs.chromium.org/p/chromium/issues/detail?id=811451).）
 
 **更新**：来自 Chrome 团队的 Alex Russell [通知我](https://toot.cafe/@slightlyoff/100655566963584982)这是一个已知 bug，应该很快就修复！
 
@@ -119,7 +119,7 @@ One thing I’ve noticed about `rIC`, though, is that it’s a little finicky in
 
 ## debounce 和 throttle
 
-These two functions aren’t built in to the browser, but they’re so useful that they’re worth calling out on their own. If you aren’t familiar with them, there’s [a good breakdown in CSS Tricks](https://css-tricks.com/debouncing-throttling-explained-examples/).这里有两个非浏览器内置的方法，但是它们很有用并值得了解。如果你不熟悉它们，这里有一个[很棒的 CSS 技巧攻略](https://css-tricks.com/debouncing-throttling-explained-examples/)
+这里有两个非浏览器内置的方法，但是它们很有用并值得了解。如果你不熟悉它们，这里有一个[很棒的 CSS 技巧攻略](https://css-tricks.com/debouncing-throttling-explained-examples/)
 
 [`debounce`](https://lodash.com/docs/4.17.10#debounce) 的标准用法是在 [`resize`](https://developer.mozilla.org/en-US/docs/Web/Events/resize)回调中。当用户调整浏览器窗口大小的时候，没必要在每个 `resize` 回调中更新布局，因为触发太频繁了。相反，你可以 `debounce` 几百毫秒，这会保证回调在用户在处理完窗口大小后触发。
 
