@@ -22,7 +22,7 @@
 
 如果不能，那你可能并不孤独。我已经写 JavaScript 和做编程许多年，曾经为一家浏览器厂商工作超过两年，直到最近，我才真正了解了这些计时器以及如何使用它们。
 
-在这篇文章中，我将高度概述这些定时器工作方式以及使用它们的时机，并且会一起介绍 Loadash 很有用的 `debounce()` 和 `throttle()` 函数。
+在这篇文章中，我将高度概述这些定时器工作方式以及使用它们的时机，并且会一起介绍 Lodash 很有用的 `debounce()` 和 `throttle()` 函数。
 
 ## Promises 和 microtasks
 
@@ -123,7 +123,7 @@ Dan Abramov 在[2018 冰岛 JSConf 上有一个精彩讲话](https://youtu.be/v6
 
 [`debounce`](https://lodash.com/docs/4.17.10#debounce) 的标准用法是在 [`resize`](https://developer.mozilla.org/en-US/docs/Web/Events/resize)回调中。当用户调整浏览器窗口大小的时候，没必要在每个 `resize` 回调中更新布局，因为触发太频繁了。相反，你可以 `debounce` 几百毫秒，这会保证回调在用户在处理完窗口大小后触发。
 
-[`throttle`](https://lodash.com/docs/4.17.10#throttle)，另一方面，是我使用得更多的方法。举个例子，[`scroll`](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onscroll) 事件是一个很棒的使用示例。再说一遍，对于每个 `scroll` 回调都更新一遍视图状态是没有意义的，因为触发频率太高了（频率在不同浏览器，不同输入法之间是不同的）。使用 `throttle` 可以规范这个行为，并确保它只在每 X 毫秒后触发。你可以调整 Loadash 的 `throttle`（或者 `debounce`）方法启动延迟的时机，在结束的时候或者不启动。
+[`throttle`](https://lodash.com/docs/4.17.10#throttle)，另一方面，是我使用得更多的方法。举个例子，[`scroll`](https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/onscroll) 事件是一个很棒的使用示例。再说一遍，对于每个 `scroll` 回调都更新一遍视图状态是没有意义的，因为触发频率太高了（频率在不同浏览器，不同输入法之间是不同的）。使用 `throttle` 可以规范这个行为，并确保它只在每 X 毫秒后触发。你可以调整 Lodash 的 `throttle`（或者 `debounce`）方法启动延迟的时机，在结束的时候或者不启动。
 
 相反，我不会在滚动场景中使用 `debounce`，因为我不希望 UI 仅在用户明确停止滚动后才更新。因为这可能会让用户苦恼和困惑，并且试图滚动继续更新 UI 状态（例如在无限滚动列表中）。
 
