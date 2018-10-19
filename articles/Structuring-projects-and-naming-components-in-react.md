@@ -5,7 +5,6 @@
 > * 译者：[也树](https://github.com/xdlrt)
 > * 校对者：[]()
 
-# Structuring projects and naming components in React
 # React 项目结构和组件命名之道
 
 React 作为一个库，不会决定你如何组织项目的结构。这是件好事，因为这样我们有了充分的自由去尝试不同的组织方式并且选取最适合我们的方式。但是从另一个角度讲，这可能会让刚刚上手 React 的开发者产生些许困惑。
@@ -58,11 +57,10 @@ src
 
 上述方式最小化了在两个遥远目录下不断切换的的问题，但是同样增加了很多烦恼。当你的应用有非常多模块的时候，你最终会可能会创建几十个 `containers` 和 `components` 目录。
 
-所以我们讨论如何组织目录和文件的时候，和组件是否被拆分为 presentational vs container 是无关的。也就是说，我们会把所有的组件都放在 `components` 目录下，除了 screens。
+所以我们讨论如何组织目录和文件的时候，和组件是否被拆分为展示型和容器型是无关的。也就是说，我们会把所有的组件都放在 `components` 目录下，除了 screens。
 
 > 即使在目录上拆分它们是不必要的，了解它们之间的差异性依然是有必要的。如果你对这个话题还有疑问，建议阅读这篇文章：[Presentational and Container Components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)。
 
-## Separating and grouping the code
 ## 拆分和组合代码
 
 在 `components` 目录下，我们通过模块/特性(module/feature)的结构来组织文件。
@@ -194,13 +192,13 @@ const ScreensRoot = () => (
 export default ScreensRoot;
 ```
 
-Notice that we put all the screens inside a folder with the same name of the route, `user/ -> User/`. Try to keep a folder for each parent route, and group the sub-routes in it. In this case, we created the folder User and we keep the screens List and screen Form in it. This pattern will help you find easily which screen is rendering each route, by just taking a look at the url.
+注意我们将所有页面都放在同一个目录下，这个目录以路由名称命名。尝试为每个父级路由建立一个目录，在这个目录中组织子路由。在这个示例中，我们创建了 User 目录并且将 List 页面和 Form 页面放在里面。这种方式使你看一眼 url 就能够轻松定位当前路由渲染的页面。
 
-A single screen could be used to render two different routes, as we did above with the routes for creating and editing an user.
+像上面的例子中的创建和编辑一个用户的路由一样，一个页面可能会被两个不同的路由渲染使用。
 
-You may notice that all the components contain the Screen as a prefix in it’s name. When the component is located outside the components folder, we should name it accordingly to its relative path to src folder. A component located at `src/screens/User/List.jsx` should be named as ScreensUserList.
+你可能注意到了所有的组件都包含 Screen 作为名称的前缀。当组件在组件目录外使用时，我们需要使用它们相对于 src 目录的路径来命名。位于 `src/screens/User/List.jsx` 的组件应该被命名为 ScreensUserList。
 
-With the Root.jsx created, our structure would be the following:
+包括 Root.jsx 在内，我们的目录结构如下：
 
 ```
 src
@@ -212,9 +210,9 @@ src
   └─ Root.jsx
 ```
 
-> Don’t forget to import Root.jsx inside index.js to be the application root component.
+> 别忘了在 index.js 中引入作为应用根组件的 Root.jsx 。
 
-In case you still have a doubt about how a screen should look like, take a look at the example below, for what would be the screen for the user form.
+如果你对一个页面长什么样子还有疑问，看看下面的示例，它就是用户表单的页面。
 
 ```js
 import React from 'react';
@@ -232,7 +230,7 @@ const ScreensUserForm = ({ match: { params } }) => (
 export default ScreensUserForm;
 ```
 
-Finally, our application would be structured like that:
+最终，我们应用的目录结构会像下面这样：
 
 ```
 src
@@ -251,22 +249,12 @@ src
   └─ Root.jsx
 ```
 
-## Recapping
+## 回顾要点
 
-- Presentational and Container components are kept at src/components
-- Group components by module/feature.
-- Keep generic components inside src/components/UI
-- Keep screens simple, with minimum structure and code.
-- Group screens accordingly to route definition. For a route /user/list we would have a screen located at /src/screens/User/List.jsx.
-- Components are named accordingly to its relative path to components or src. Given that, a component located at src/components/User/List.jsx would be named as UserList. A component located at src/screens/User/List would be named as ScreensUserList.
-- Components that are in a folder with same name, don’t repeat the name in the component. Considering that, a component located at src/components/User/List/List.jsx would be named as UserList and NOT as UserListList.
-
-## Conclusion
-
-The above tips cover only a piece from organization and structure of a project. I tried to keep it only about React and leave Redux for a future post.
-
-How about you? Do you have some approach that you would like to share with us? Write an answer below, I would love to read that!
-
-Did you enjoy the read? Help us spread the word by giving a like and sharing
-
-Don’t forget to follow me, to receive notifications about future posts!
+- 展示型和容器组件放在 src/components 目录下
+- 通过模块/特性（module/feature）的方式组织组件
+- 基础的 UI 组件放在 src/components/UI 目录下
+- 保持页面简单，使用最简洁的结构和代码
+- 通过路由定义组织页面。对于 /user/list 路由地址来说，我们会有一个页面在 /src/screens/User/List.jsx。
+- 组件由相对 components 或 src 的路径命名，就是说，处于 src/components/User/List.jsx 位置的组件会被命名为 UserList。处于 src/screens/User/List.jsx 位置的组件会被命名为 ScreensUserList
+- 组件和目录同名时，不要在使用组件的时候重复这个名字。考虑这样一个场景，处于 src/components/User/List/List.jsx 位置的组件会被命名为 UserList 而不是 UserListList。
