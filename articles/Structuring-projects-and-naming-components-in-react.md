@@ -57,7 +57,7 @@ src
 
 上述方式最小化了在两个遥远目录下不断切换的的问题，但是同样增加了很多烦恼。当你的应用有非常多模块的时候，你最终会可能会创建几十个 `containers` 和 `components` 目录。
 
-所以我们讨论如何组织目录和文件的时候，和组件是否被拆分为展示型和容器型是无关的。也就是说，我们会把所有的组件都放在 `components` 目录下，除了 screens。
+所以我们讨论如何组织目录和文件的时候，和组件是否被拆分为展示型和容器型是无关的。也就是说，我们会把所有的组件都放在 `components` 目录下，除了页面。
 
 > 即使在目录上拆分它们是不必要的，了解它们之间的差异性依然是有必要的。如果你对这个话题还有疑问，建议阅读这篇文章：[Presentational and Container Components](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0)。
 
