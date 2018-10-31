@@ -9,9 +9,9 @@
 
 ---
 
-### JS函数作用域和块级作用域的区别
+# The Difference Between Function and Block Scope in JavaScript
 
-回到基础的var，let，const变量
+Back to the basics with the var, let and const variables
 
 
 
@@ -19,17 +19,17 @@
 
 
 
-最近我向一些人提起我想回顾JS基础知识时，他们推荐了Wes Bos的 “ES6 For Everyone” 课程。Wes是一个位好老师和擅长提炼复杂主题的沟通者。
+When I mentioned to someone recently that I’ve been wanting to get back to the basics with JavaScript, they recommended [Wes Bos](https://medium.com/@wesbos)’s “ES6 For Everyone” course. Wes is a great teacher and a clear communicator with a gift for distilling complex topics.
 
 
 
-我今天开始研究它来巩固JS基础知识，开始深入了解JS之旅。
+I started working through it today to help me nail down the basics, and begin my journey deeper into the chasms of JavaScript.
 
 
 
-### var，let和const变量的区别
+### The difference between var, let and const variables
 
-在JS中有三种声明变量的方式
+There are three ways to declare variables in JS:
 
 
 
@@ -43,35 +43,35 @@ const key = 'abc123';
 
 ### var
 
-var的独特之处在于？它能被重复声明和修改。例如:
+What is unique about `var`? It can be reassigned and updated. For example:
 
 
 
 ```js
-// 定义变量:
+// Define the variable:
 var width = 100;
 
-// 调用变量:
+// Call the variable:
 width;
-// 它返回:
+// It returns:
 100
-// 重新分配变量并调用:
+// Reassign the variable and call it again:
 width = 200;
 
 width;
-// 返回:
+// Returns:
 200
 ```
 
-var变量是''函数作用域''这意味着什么？这意味着它们只能在它们被创建的函数中使用，如果不是在函数中被创建，它们会变成''全局作用域''
+`var` variables are ‘function scope.’ What does this mean? It means they are only available *inside* the function they’re created in, or if not created inside a function, they are ‘globally scoped.’
 
 
 
-如果var是定义在函数内部，并且我后来尝试在函数外部调用它，它不会生效的。
+If `var` is defined inside a function and I subsequently try to call it outside the function, it won’t work.
 
 
 
-例如:
+For example:
 
 
 
@@ -81,17 +81,17 @@ function setWidth(){
     console.log(width);
 }
 width;
-// 返回:
+// Returns:
 Uncaught ReferenceError: width is not defined
 ```
 
 
 
-重复一遍，因为var是在函数内定义的，它在函数外部不可用。
+Again, because `var` is defined within the function, it is not available outside the function.
 
 
 
-### 理解作用域
+### Understanding scope
 
 
 
@@ -106,7 +106,7 @@ if (age > 12){
 
 
 
-在上面的例子，控制台里会返回:
+In the example above, the console returns:
 
 
 
@@ -117,7 +117,7 @@ You are 700 dog years old!
 
 
 
-但如果我在控制台里调用dogYears会返回:
+But if I call `dogYears` in the console in returns:
 
 
 
@@ -129,29 +129,29 @@ dogYears;
 
 
 
-这发生了什么事？为什么dogYears会在全局作用域？
+So what happened? Why is `dogYears` available at the global scope?
 
 
 
-因为var是全局作用域—并且上面这个例子中var dogYears不是定义在函数内的—而是定义在window，或者说全局作用域
+Because `var` variables are function scoped — and because `var dogYears` is *not* defined within a function in the above example — `var` is instead defined at the ‘window,’ or global scope.
 
 
 
-换句话说，var没有被限制在大括号内。它是定义范围的函数。
+In other words, `var` is not limited to the curly brackets. It is the function which defines the scope.
 
 
 
-### 使用let和const的好处
+#### Benefits of using let and const
 
-使用let和const的好处是？它们不是函数作用域而是块级作用域
-
-
-
-什么是块？块是一组打开和关闭的大括号。
+What are the benefits of using `let` and `const`? Rather than being scoped to the *function* they are scoped to the *block*.
 
 
 
-所以在上面的例子中，如果我们把var dogYears改成let dogYears，然后在控制台调用dogYears，它返回“Uncaught ReferenceError: dogYears is not defined”
+What is the block? A block is a set of opening and closing curly brackets.
+
+
+
+So in the example above, if we change `var dogYears` to `let dogYears`, then call `dogYears` in the console, it returns `Uncaught ReferenceError: dogYears is not defined`.
 
 
 
@@ -165,23 +165,22 @@ if (age > 12){
 
 
 
-在上面例子中，我们也能用const替换let
+We could also substitute `const` for `let` in the example above.
 
 
 
-### 总结
+### Recap
 
 
 
 ```
-var是函数作用域
-let和const是块级作用域
+var is function scope.
+let and const are block scope.
 
-函数作用域是在函数内
-块级作用域是在大括号内
+Function scope is within the function.
+Block scope is within curly brackets.
 
 ```
-
 
 
 
