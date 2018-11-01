@@ -19,7 +19,7 @@ Back to the basics with the var, let and const variables
 
 
 
-When I mentioned to someone recently that I’ve been wanting to get back to the basics with JavaScript, they recommended [Wes Bos](https://medium.com/@wesbos)’s “ES6 For Everyone” course. Wes is a great teacher and a clear communicator with a gift for distilling complex topics.
+When I mentioned to someone recently that I’ve been wanting to get back to the basics with JavaScript, they recommended [Wes Bos](https://medium.com/@wesbos)’s “ES6 For Everyone” course. Wes is a great teacher and a clear communicator with a gift for distilling complex topics.
 
 
 
@@ -43,7 +43,7 @@ const key = 'abc123';
 
 ### var
 
-What is unique about `var`? It can be reassigned and updated. For example:
+What is unique about `var`? It can be reassigned and updated. For example:
 
 
 
@@ -63,11 +63,11 @@ width;
 200
 ```
 
-`var` variables are ‘function scope.’ What does this mean? It means they are only available *inside* the function they’re created in, or if not created inside a function, they are ‘globally scoped.’
+`var` variables are ‘function scope.’ What does this mean? It means they are only available *inside* the function they’re created in, or if not created inside a function, they are ‘globally scoped.’
 
 
 
-If `var` is defined inside a function and I subsequently try to call it outside the function, it won’t work.
+If `var` is defined inside a function and I subsequently try to call it outside the function, it won’t work.
 
 
 
@@ -87,7 +87,7 @@ Uncaught ReferenceError: width is not defined
 
 
 
-Again, because `var` is defined within the function, it is not available outside the function.
+Again, because `var` is defined within the function, it is not available outside the function.
 
 
 
@@ -117,7 +117,7 @@ You are 700 dog years old!
 
 
 
-But if I call `dogYears` in the console in returns:
+But if I call `dogYears` in the console in returns:
 
 
 
@@ -129,21 +129,21 @@ dogYears;
 
 
 
-So what happened? Why is `dogYears` available at the global scope?
+So what happened? Why is `dogYears` available at the global scope?
 
 
 
-Because `var` variables are function scoped — and because `var dogYears` is *not* defined within a function in the above example — `var` is instead defined at the ‘window,’ or global scope.
+Because `var` variables are function scoped — and because `var dogYears` is *not* defined within a function in the above example — `var` is instead defined at the ‘window,’ or global scope.
 
 
 
-In other words, `var` is not limited to the curly brackets. It is the function which defines the scope.
+In other words, `var` is not limited to the curly brackets. It is the function which defines the scope.
 
 
 
 #### Benefits of using let and const
 
-What are the benefits of using `let` and `const`? Rather than being scoped to the *function* they are scoped to the *block*.
+What are the benefits of using `let` and `const`? Rather than being scoped to the *function* they are scoped to the *block*.
 
 
 
@@ -151,7 +151,7 @@ What is the block? A block is a set of opening and closing curly brackets.
 
 
 
-So in the example above, if we change `var dogYears` to `let dogYears`, then call `dogYears` in the console, it returns `Uncaught ReferenceError: dogYears is not defined`.
+So in the example above, if we change `var dogYears` to `let dogYears`, then call `dogYears` in the console, it returns `Uncaught ReferenceError: dogYears is not defined`.
 
 
 
@@ -165,7 +165,7 @@ if (age > 12){
 
 
 
-We could also substitute `const` for `let` in the example above.
+We could also substitute `const` for `let` in the example above.
 
 
 
@@ -181,7 +181,6 @@ Function scope is within the function.
 Block scope is within curly brackets.
 
 ```
-
 
 
 
