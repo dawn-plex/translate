@@ -9,9 +9,9 @@
 
 ---
 
-# 5条在JavaScript中写出更好的条件语句的建议
+# 写好JavaScript条件语句的5条守则
 
-在用JavaScript工作时，我们会处理许多条件语句，这里有5条让你写出更好/干净的条件语句的建议。
+在用JavaScript工作时，我们经常和条件语句打交道，这里有5条让你写出更好/干净的条件语句的建议。
 
 
 
@@ -21,7 +21,7 @@
 
 3.使用默认参数和解构
 
-4.倾向于Map/Object Literal而不是Switch语句
+4.倾向于遍历对象而不是Switch语句
 
 5.对 所有/部分 判断使用Array.every & Array.some
 
@@ -73,12 +73,12 @@ function test(fruit) {
 
 
 
-让我们扩大上一个例子让它包含两个条件。
+让我们拓展上一个例子让它包含两个条件。
 
 
 
-- 如果没有传入fruit，抛出错误
-- 接受quantity参数，并且在quantity大于10时打印出来
+- 如果没有传入 fruit，抛出错误
+- 接受 quantity 参数，并且在 quantity 大于 10 时打印出来
 
 
 
@@ -169,7 +169,7 @@ function test(fruit, quantity) {
 
 
 
-通过倒置判断条件2，我们的代码避免了嵌套语句。这个技巧在我们有很长的逻辑时是非常有用的，而且我们希望在条件不满足时停止进一步处理。
+通过倒置判断条件2，我们的代码避免了嵌套语句。这个技巧在我们需要进行很长的逻辑判断时是非常有用的，特别是我们希望能够在条件不满足时能够停止下来进行处理。
 
 而且这么做并不困难。问问自己，这个版本(没有嵌套)是不是比之前的(两层条件嵌套)更好，可读性更高？
 
@@ -221,7 +221,7 @@ test('apple', 2); // We have 2 apple!
 
 
 
-这更加直观，不是吗？声明每个有自己的[默认参数](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters)的参数.
+这更加直观，不是吗？注意，每个声明都有自己的[默认参数](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters).
 
 例如，我们也能给``fruit``分配默认值:`function test(fruit = 'unknown', quantity = 1)`。
 
@@ -268,7 +268,7 @@ test({ name: 'apple', color: 'red' }); // apple
 
 由于我们只需要``name``属性，我们可以用`{name}`解构出参数，然后我们就能使用变量``name``代替`fruit.name`。
 
-我们也能声明空对象`{}`作为默认值。如果我们不这么做，你将得到一个错误当执行到`test(undefined)` - `Cannot destructure property name of 'undefined' or 'null'`时。因为在undefined中没有``name``属性。
+我们也能声明空对象`{}`作为默认值。如果我们不这么做，当执行到test(undefined) - Cannot destructure property name of 'undefined' or 'null'时你将得到一个错误。因为在undefined中没有``name``属性。
 
 如果你不介意使用第三方库，这有一些方式减少null的检查:
 
@@ -297,9 +297,9 @@ test({ name: 'apple', color: 'red' }); // apple
 
 
 
-### 4.倾向于Map/Object Literal而不是Switch语句
+### 4.倾向于对象遍历而不是Switch语句
 
-让我们看下面这个例子，我们想根据color打印出fruits:
+让我们看下面这个例子，我们想根据 color 打印出 fruits:
 
 
 
@@ -325,7 +325,7 @@ test('yellow'); // ['banana', 'pineapple']
 
 
 
-上面的代码看起来没有错误，但是我找到了一些累赘。用object literal实现相同的结果，语法看起来更简洁:
+上面的代码看起来没有错误，但是我找到了一些累赘。用对象遍历实现相同的结果，语法看起来更简洁:
 
 
 
@@ -364,9 +364,9 @@ function test(color) {
 
  [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)是一种在ES2015之后实现的对象类型，允许你存储key value值。
 
-我们是否应当禁止switch语句的使用？不要限制你自己。个人来说，我尽可能的使用object literal，但我并不严格遵守它，而是使用对当前场景有意义的。
+我们是否应当禁止switch语句的使用？不要限制你自己。个人来说，我尽可能的使用对象遍历，但我并不严格遵守它，而是使用对当前场景有意义的。
 
-Todd Motto有一篇关于switch语句vs object literal更深入的文章，你可以在[这](https://toddmotto.com/deprecating-the-switch-statement-for-object-literals/)阅读
+Todd Motto有一篇关于 switch语句 vs 对象遍历 更深入的文章，你可以在[这](https://toddmotto.com/deprecating-the-switch-statement-for-object-literals/)阅读
 
 ### TL;DR; 重构语法
 
