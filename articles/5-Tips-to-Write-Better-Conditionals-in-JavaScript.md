@@ -5,35 +5,29 @@
 >- 译文出自：[阿里云翻译小组](https://github.com/dawn-teams/translate)
 >- 译文链接：[https://github.com/dawn-teams/translate/blob/master/articles/5-Tips-to-Write-Better-Conditionals-in-JavaScript.md](https://github.com/dawn-teams/translate/blob/master/articles/5-Tips-to-Write-Better-Conditionals-in-JavaScript.md)
 >- 译者：[眠云(杨涛)](https://github.com/JeromeYangtao)
->- 校对者：
+>- 校对者：[也树](https://github.com/xdlrt)，[Mcskiller](https://github.com/Mcskiller)
 
 ---
 
-# 5 Tips to Write Better Conditionals in JavaScript
+# 写好JavaScript条件语句的5条守则
 
-When working with JavaScript, we deal a lot with conditionals, here are the 5 tips for you to write better / cleaner conditionals.
+在用 JavaScript 工作时，我们经常和条件语句打交道，这里有5条让你写出更好/干净的条件语句的建议。
 
+1.多重判断时使用 Array.includes
 
+2.更少的嵌套，尽早 return
 
-1.Use Array.includes for Multiple Criteria
+3.使用默认参数和解构
 
-2.Less Nesting, Return Early
+4.倾向于遍历对象而不是 Switch 语句
 
-3.Use Default Function Parameters and Destructuring
+5.对 所有/部分 判断使用 Array.every & Array.some
 
-4.Favor Map / Object Literal than Switch Statement
+6.总结
 
-5.Use Array.every & Array.some for All / Partial Criteria
+### 1.多重判断时使用 Array.includes
 
-6.Summary
-
-
-
-### 1.Use Array.includes for Multiple Criteria
-
-Let's take a look at the example below:
-
-
+让我们看一下下面这个例子:
 
 ```js
 // condition
@@ -44,17 +38,12 @@ function test(fruit) {
 }
 ```
 
+第一眼，上面这个例子看起来没问题。如果我们有更多名字叫 `cherry` 和 `cranberries` 的红色水果呢？我们准备用更多的 `||` 来拓展条件语句吗？
 
-
-At first glance, the above example looks good. However, what if we get more red fruits, say `cherry` and `cranberries`? Are we going to extend the statement with more `||` ?
-
-We can rewrite the conditional above by using `Array.includes` [(Array.includes)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes)
-
-
+我们可以用 `Array.includes` [(Array.includes)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes)重写条件语句。
 
 ```js
 function test(fruit) {
-  // extract conditions to array
   const redFruits = ['apple', 'strawberry', 'cherry', 'cranberries'];
 
   if (redFruits.includes(fruit)) {
@@ -63,36 +52,26 @@ function test(fruit) {
 }
 ```
 
+我们把`红色的水果(red fruits)`这一判断条件提取到一个数组。这样一来，代码看起来更整洁。
 
+### 2.更少的嵌套，尽早 Return
 
-We extract the `red fruits` (conditions) to an array. By doing this, the code looks tidier.
+让我们拓展上一个例子让它包含两个条件。
 
-
-
-### 2.Less Nesting, Return Early
-
-
-
-Let's expand the previous example to include two more conditions:
-
-
-
-- if no fruit provided, throw error
-- accept and print the fruit quantity if exceed 10.
-
-
+- 如果没有传入参数 fruit，抛出错误
+- 接受 quantity 参数，并且在 quantity 大于 10 时打印出来
 
 ```js
 function test(fruit, quantity) {
   const redFruits = ['apple', 'strawberry', 'cherry', 'cranberries'];
 
-  // condition 1: fruit must has value
+  // 条件 1: fruit 必须有值
   if (fruit) {
-    // condition 2: must be red
+    // 条件 2: 必须是red的
     if (redFruits.includes(fruit)) {
       console.log('red');
 
-      // condition 3: must be big quantity
+      // 条件 3: quantity大于10
       if (quantity > 10) {
         console.log('big quantity');
       }
@@ -102,37 +81,33 @@ function test(fruit, quantity) {
   }
 }
 
-// test results
+// 测试结果
 test(null); // error: No fruits
 test('apple'); // print: red
 test('apple', 20); // print: red, big quantity
 ```
 
+在上面的代码, 我们有:
 
+- 1个 if/else 语句筛选出无效的语句
+- 3层if嵌套语句 (条件 1, 2 & 3)
 
-Look at the code above, we have:
-
-- 1 if/else statement that filter out invalid condition
-- 3 levels of nested if statement (condition 1, 2 & 3)
-
-A general rule I personally follow is **return early when invalid conditions** found.
-
-
+我个人遵循的规则一般是在发现无效条件时，**尽早Return**。
 
 ```js
-/_ return early when invalid conditions found _/
+/_ 当发现无效语句时，尽早Return _/
 
 function test(fruit, quantity) {
   const redFruits = ['apple', 'strawberry', 'cherry', 'cranberries'];
 
-  // condition 1: throw error early
+  // 条件 1: 尽早抛出错误
   if (!fruit) throw new Error('No fruit!');
 
-  // condition 2: must be red
+  // 条件 2: 必须是红色的
   if (redFruits.includes(fruit)) {
     console.log('red');
 
-    // condition 3: must be big quantity
+    // 条件 3: 必须是大质量的
     if (quantity > 10) {
       console.log('big quantity');
     }
@@ -141,60 +116,53 @@ function test(fruit, quantity) {
 
 ```
 
+这样一来，我们少了一层嵌套语句。这种编码风格非常好，尤其是当你有很长的if语句的时候(想象你需要滚动到最底层才知道还有else语句，这并不酷)
 
-
-By doing this, we have one less level of nested statement. This coding style is good especially when you have long if statement (imagine you need to scroll to the very bottom to know there is an else statement, not cool).
-
-We can further reduce the nesting if, by inverting the conditions & return early. Look at condition 2 below to see how we do it:
-
-
+我们可以通过 倒置判断条件 & 尽早return 进一步减少if嵌套。看下面我们是怎么处理判断 条件2 的: 
 
 ```js
-/_ return early when invalid conditions found _/
+/_ 当发现无效语句时，尽早Return _/
 
 function test(fruit, quantity) {
   const redFruits = ['apple', 'strawberry', 'cherry', 'cranberries'];
 
-  if (!fruit) throw new Error('No fruit!'); // condition 1: throw error early
-  if (!redFruits.includes(fruit)) return; // condition 2: stop when fruit is not red
+  // 条件 1: 尽早抛出错误
+  if (!fruit) throw new Error('No fruit!');
+  // 条件 2: 当水果不是红色时停止继续执行
+  if (!redFruits.includes(fruit)) return; 
 
   console.log('red');
 
-  // condition 3: must be big quantity
+  // 条件 3: 必须是大质量的
   if (quantity > 10) {
     console.log('big quantity');
   }
 }
 ```
 
+通过倒置判断条件2，我们的代码避免了嵌套语句。这个技巧在我们需要进行很长的逻辑判断时是非常有用的，特别是我们希望能够在条件不满足时能够停止下来进行处理。
 
+而且这么做并不困难。问问自己，这个版本(没有嵌套)是不是比之前的(两层条件嵌套)更好，可读性更高？
 
-By inverting the conditions of condition 2, our code is now free of a nested statement. This technique is useful when we have long logic to go and we want to stop further process when a condition is not fulfilled.
+但对于我，我会保留先前的版本(包含两层嵌套)。这是因为:
 
-However, that's no **hard rule** for doing this. Ask yourself, is this version (without nesting) better / more readable than the previous one (condition 2 with nested)?
+- 代码比较短且直接，包含if嵌套的更清晰
+- 倒置判断条件可能加重思考的负担(增加认知载荷)
 
-For me, I would just leave it as the previous version (condition 2 with nested). It is because:
-
-- the code is short and straight forward, it is clearer with nested if
-- inverting condition may incur more thinking process (increase cognitive load)
-
-Therefore, always **aims for Less Nesting and Return Early but don't overdo it**. There is an article & StackOverflow discussion that talks further on this topic if you interested:
+因此，应当**尽力减少嵌套和尽早return，但不要过度**。如果你感兴趣的话，可以看一下关于这个话题的一篇文章和 StackOverflow 上的讨论。
 
 - [Avoid Else, Return Early](http://blog.timoxley.com/post/47041269194/avoid-else-return-early) by Tim Oxley
 - [StackOverflow discussion](https://softwareengineering.stackexchange.com/questions/18454/should-i-return-from-a-function-early-or-use-an-if-statement) on if/else coding style
 
+### 3.使用默认参数和解构
 
-
-### 3.Use Default Function Parameters and Destructuring
-
-I guess the code below might look familiar to you, we always need to check for `null` / `undefined` value and assign default value when working with JavaScript:
-
-
+我猜下面的代码你可能会熟悉，在JavaScript中我们总是需要检查 `null` / `undefined`的值和指定默认值:
 
 ```js
 function test(fruit, quantity) {
   if (!fruit) return;
-  const q = quantity || 1; // if quantity not provided, default to one
+  // 如果 quantity 参数没有传入，设置默认值为 1
+  const q = quantity || 1; 
 
   console.log(`We have ${q} ${fruit}!`);
 }
@@ -204,14 +172,11 @@ test('banana'); // We have 1 banana!
 test('apple', 2); // We have 2 apple!
 ```
 
-
-
-In fact, we can eliminate the variable `q` by assigning default function parameters.
-
-
+实际上，我们可以通过声明 默认函数参数 来消除变量 q。
 
 ```js
-function test(fruit, quantity = 1) { // if quantity not provided, default to one
+function test(fruit, quantity = 1) {
+  // 如果 quantity 参数没有传入，设置默认值为 1
   if (!fruit) return;
   console.log(`We have ${quantity} ${fruit}!`);
 }
@@ -221,17 +186,15 @@ test('banana'); // We have 1 banana!
 test('apple', 2); // We have 2 apple!
 ```
 
+这更加直观，不是吗？注意，每个声明都有自己的[默认参数](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters).
 
+例如，我们也能给``fruit``分配默认值:`function test(fruit = 'unknown', quantity = 1)`。
 
-Much easier & intuitive isn't it? Please note that each parameter can has it own [default function parameter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters). For example, we can assign default value to `fruit` too: `function test(fruit = 'unknown', quantity = 1)`.
-
-What if our `fruit` is an object? Can we assign default parameter?
-
-
+如果``fruit``是一个object会怎么样？我们能分配一个默认参数吗？
 
 ```js
 function test(fruit) { 
-  // printing fruit name if value provided
+  // 当值存在时打印 fruit 的值
   if (fruit && fruit.name)  {
     console.log (fruit.name);
   } else {
@@ -245,67 +208,53 @@ test({ }); // unknown
 test({ name: 'apple', color: 'red' }); // apple
 ```
 
-
-
-Look at the example above, we want to print the fruit name if it's available or we will print unknown. We can avoid the conditional `fruit && fruit.name` checking with default function parameter & destructing.
-
-
+看上面这个例子，我们想打印 fruit 对象中可能存在的 name 属性。否则我们将打印unknown。我们可以通过默认参数以及解构从而避免判断条件 `fruit && fruit.name`
 
 ```js
-// destructing - get name property only
-// assign default empty object {}
+// 解构 - 仅仅获取 name 属性
+// 为其赋默认值为空对象
 function test({name} = {}) {
   console.log (name || 'unknown');
 }
 
-//test results
+// test results
 test(undefined); // unknown
 test({ }); // unknown
 test({ name: 'apple', color: 'red' }); // apple
 ```
 
+由于我们只需要 `name` 属性，我们可以用 `{name}` 解构出参数，然后我们就能使用变量 `name` 代替 `fruit.name`。
 
+我们也需要声明空对象 `{}` 作为默认值。如果我们不这么做，当执行 `test(undefined)` 时，你将得到一个无法对 undefined 或 null 解构的的错误。因为在 undefined 中没有 `name` 属性。
 
-Since we only need property `name` from fruit, we can destructure the parameter using `{name}`, then we can use `name` as variable in our code instead of `fruit.name`.
+如果你不介意使用第三方库，这有一些方式减少null的检查:
 
-We also assign empty object `{}` as default value. If we do not do so, you will get error when executing the line `test(undefined)` - `Cannot destructure property name of 'undefined' or 'null'.` because there is no `name` property in undefined.
+- 使用 [Lodash get](https://lodash.com/docs/4.17.10#get)函数
+- 使用Facebook开源的[idx](https://github.com/facebookincubator/idx)库(with Babeljs)
 
-If you don't mind using 3rd party libraries, there are a few ways to cut down null checking:
-
-- use [Lodash get](https://lodash.com/docs/4.17.10#get) function
-- use Facebook open source's [idx](https://github.com/facebookincubator/idx) library (with Babeljs)
-
-Here is an example of using Lodash:
-
-
+这是一个使用Lodash的例子:
 
 ```js
-// Include lodash library, you will get _
 function test(fruit) {
-  console.log(__.get(fruit, 'name', 'unknown'); // get property name, if not available, assign default value 'unknown'
+  // 获取属性名，如果属性名不可用，赋默认值为 unknown
+  console.log(__.get(fruit, 'name', 'unknown'); 
 }
 
-//test results
+// test results
 test(undefined); // unknown
 test({ }); // unknown
 test({ name: 'apple', color: 'red' }); // apple
 ```
 
+你可以在[jsbin](http://jsbin.com/bopovajiye/edit?js,console)运行demo代码。除此之外，如果你是函数式编程的粉丝，你可能选择使用 [Lodash fp](https://github.com/lodash/lodash/wiki/FP-Guide)，Lodash的函数式版本(方法变更为``get``或者``getOr``)。
 
+### 4.倾向于对象遍历而不是Switch语句
 
-You may run the demo code [here](http://jsbin.com/bopovajiye/edit?js,console). Besides, if you are a fan of Functional Programming (FP), you may opt to use [Lodash fp](https://github.com/lodash/lodash/wiki/FP-Guide), the functional version of Lodash (method changed to `get` or `getOr`).
-
-
-
-### 4.Favor Map / Object Literal than Switch Statement
-
-Let's look at the example below, we want to print fruits based on color:
-
-
+让我们看下面这个例子，我们想根据 color 打印出水果:
 
 ```js
 function test(color) {
-  // use switch case to find fruits in color
+  // 使用条件语句来寻找对应颜色的水果
   switch (color) {
     case 'red':
       return ['apple', 'strawberry'];
@@ -318,38 +267,28 @@ function test(color) {
   }
 }
 
-//test results
+// test results
 test(null); // []
 test('yellow'); // ['banana', 'pineapple']
 ```
 
-
-
-The above code seems nothing wrong, but I find it quite verbose. The same result can be achieve with object literal with cleaner syntax:
-
-
+上面的代码看起来没有错误，但是我找到了一些累赘。用对象遍历实现相同的结果，语法看起来更简洁:
 
 ```js
-// use object literal to find fruits in color
-  const fruitColor = {
-    red: ['apple', 'strawberry'],
-    yellow: ['banana', 'pineapple'],
-    purple: ['grape', 'plum']
-  };
+const fruitColor = {
+  red: ['apple', 'strawberry'],
+  yellow: ['banana', 'pineapple'],
+  purple: ['grape', 'plum']
+};
 
 function test(color) {
   return fruitColor[color] || [];
 }
 ```
 
-
-
-Alternatively, you may use [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) to achieve the same result:
-
-
+或者你也可以使用 [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)实现相同的结果:
 
 ```js
-// use Map to find fruits in color
   const fruitColor = new Map()
     .set('red', ['apple', 'strawberry'])
     .set('yellow', ['banana', 'pineapple'])
@@ -360,21 +299,15 @@ function test(color) {
 }
 ```
 
+[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)是一种在 ES2015 规范之后实现的对象类型，允许你存储 key 和 value 的值。
 
+但我们是否应当禁止switch语句的使用呢？答案是不要限制你自己。从个人来说，我会尽可能的使用对象遍历，但我并不严格遵守它，而是使用对当前的场景更有意义的方式。
 
-[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) is the object type available since ES2015, allow you to store key value pair.
+Todd Motto有一篇关于 switch 语句对比对象遍历的更深入的文章，你可以在[这个地方](https://toddmotto.com/deprecating-the-switch-statement-for-object-literals/)阅读
 
-*Should we ban the usage of switch statement?* Do not limit yourself to that. Personally, I use object literal whenever possible, but I wouldn't set hard rule to block that, use whichever make sense for your scenario.
+### TL;DR; 重构语法
 
-Todd Motto has an article that dig deeper on switch statement vs object literal, you may read [here](https://toddmotto.com/deprecating-the-switch-statement-for-object-literals/).
-
-
-
-### TL;DR; Refactor the syntax
-
-For the example above, we can actually refactor our code to achieve the same result with `Array.filter` .
-
-
+在上面的例子，我们能够用`Array.filter` 重构我们的代码，实现相同的效果。
 
 ```js
  const fruits = [
@@ -387,23 +320,15 @@ For the example above, we can actually refactor our code to achieve the same res
 ];
 
 function test(color) {
-  // use Array filter to find fruits in color
-
   return fruits.filter(f => f.color == color);
 }
 ```
 
+有着不止一种方法能够实现相同的结果，我们以上展示了 4 种。
 
+### 5.对 所有/部分 判断使用Array.every & Array.some
 
-There's always more than 1 way to achieve the same result. We have shown 4 with the same example. Coding is fun!
-
-
-
-### 5.Use Array.every & Array.some for All / Partial Criteria
-
-This last tip is more about utilizing new (but not so new) Javascript Array function to reduce the lines of code. Look at the code below, we want to check if all fruits are in red color:
-
-
+这最后一个建议更多是关于利用 JavaScript Array 的内置方法来减少代码行数。看下面的代码，我们想要检查是否所有水果都是红色:
 
 ```js
 const fruits = [
@@ -415,7 +340,7 @@ const fruits = [
 function test() {
   let isAllRed = true;
 
-  // condition: all fruits must be red
+  // 条件：所有水果都是红色
   for (let f of fruits) {
     if (!isAllRed) break;
     isAllRed = (f.color == 'red');
@@ -425,11 +350,7 @@ function test() {
 }
 ```
 
-
-
-The code is so long! We can reduce the number of lines with `Array.every`:
-
-
+代码那么长！我们可以通过 `Array.every`减少代码行数:
 
 ```js
 const fruits = [
@@ -439,18 +360,13 @@ const fruits = [
   ];
 
 function test() {
-  // condition: short way, all fruits must be red
   const isAllRed = fruits.every(f => f.color == 'red');
 
   console.log(isAllRed); // false
 }
 ```
 
-
-
-Much cleaner now right? In a similar way, if we want to test if any of the fruit is red, we can use `Array.some` to achieve it in one line.
-
-
+现在更简洁了，不是吗？相同的方式，如果我们想测试是否存在红色的水果，我们可以使用 `Array.some` 一行代码实现。
 
 ```js
 const fruits = [
@@ -460,22 +376,15 @@ const fruits = [
 ];
 
 function test() {
-  // condition: if any fruit is red
+  // 条件：任何一个水果是红色
   const isAnyRed = fruits.some(f => f.color == 'red');
 
   console.log(isAnyRed); // true
 }
 ```
 
+### 6.总结
 
+让我们一起生产更多可读性高的代码。我希望你能从这篇文章学到东西。
 
-### 6.Summary
-
-Let's produce more readable code together. I hope you learn something new in this article.
-
-That's all. Happy coding!
-
-
-
-
-
+这就是所有的内容。编码快乐！
