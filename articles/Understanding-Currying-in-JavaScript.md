@@ -1,15 +1,15 @@
 > * 原文地址：[Understanding Currying in JavaScript](https://blog.bitsrc.io/understanding-currying-in-javascript-ceb2188c339)
 > * 原文作者：[Chidume Nnamdi](https://blog.bitsrc.io/@kurtwanger40?source=post_header_lockup)
 > * 译文出自：[阿里云翻译小组](https://github.com/dawn-teams/translate)
-> * 译文链接：[https://github.com/dawn-teams/translate/blob/master/articles/A-tour-of-JavaScript-timers-on-the-web.md](https://github.com/dawn-teams/translate/blob/master/articles/A-tour-of-JavaScript-timers-on-the-web.md)
+> * 译文链接：[https://github.com/dawn-plex/translate/blob/master/articles/Understanding-Currying-in-JavaScript.md](https://github.com/dawn-plex/translate/blob/master/articles/Understanding-Currying-in-JavaScript.md)
 > * 译者：[灵沼](https://github.com/su-dan)
-> * 校对者：[也树](https://github.com/xdlrt)、[靖鑫](https://github.com/luckyjing)
+> * 校对者：[也树](https://github.com/xdlrt)
 
 ---
 
 # 理解JavaScript的柯里化
 
-函数式编程是一种将函数作为参数传递并返回没有副作用函数（修改参数的状态）的编程风格。
+函数式编程是一种编程风格，它可以将函数作为参数传递，并返回没有副作用（改变程序状态）的函数
 
 许多计算机语言都采用了这种编程风格。在这些语言中，JavaScript、Haskell、Clojure、Erlang 和 Scala 是最流行的几种。
 
@@ -27,7 +27,7 @@
 
 ## 什么是柯里化？
 
-柯里化其实是函数编程的一个过程，在这个过程中我们能把一个带有多个参数的函数转换成一系列的嵌套函数。它返回一个新函数，这个新函数期望传入下一个参数。
+柯里化其实是函数式编程的一个过程，在这个过程中我们能把一个带有多个参数的函数转换成一系列的嵌套函数。它返回一个新函数，这个新函数期望传入下一个参数。
 
 它不断地返回新函数（像我们之前讲的，这个新函数期望当前的参数），直到所有的参数都被使用。参数会一直保持 `alive` （通过闭包），当柯里化函数链中最后一个函数被返回和调用的时候，它们会用于执行。
 
@@ -62,7 +62,7 @@ function multiply(a, b, c) {
 multiply(1,2,3); // 6
 ```
 
-你看，我们如何调用这个具有完整参数的乘法函数。让我们创建一个 `curried` 版本，然后看看在一系列的调用中我们如何调用相同的函数（并且得到相同的结果）：
+你看，我们如何调用这个具有完整参数的乘法函数。让我们创建一个柯里化后的版本，然后看看在一系列的调用中我们如何调用相同的函数（并且得到相同的结果）：
 
 ```
 function multiply(a) {
@@ -172,7 +172,7 @@ function volume(l) {
 const aCylinder = volume(100)(20)(90) // 180000
 ```
 
-像我们在函数`multiply`一样，最后一个函数只接受参数`h`，但是会使用其他变量来做运算，这些变量的包含作用于早已经返回。由于**闭包**的原因，它们仍然可以工作。
+像我们在函数`multiply`一样，最后一个函数只接受参数`h`，但是会使用早已返回的其它作用域的变量来进行运算。由于**闭包**的原因，它们仍然可以工作。
 
 柯里化背后的想法是，接受一个函数并且得到一个函数，这个函数返回**专用**的函数。
 
@@ -482,7 +482,7 @@ function curry(fn, ...args) {
 
 现在我们可以使用我们自己的`curry`函数来创造专用的函数了。
 
-Let’s use our `curry` function to create a more specific function (one that calculates the volume of 100m(length) cylinders) of the volume function:让我们使用自己的`curry`函数来创建更多的专用函数（其中一个就是专门用来计算高度为100m的圆柱体体积的方法）
+让我们使用自己的柯里化函数来创建更多的专用函数（其中一个就是专门用来计算高度为100m的圆柱体体积的方法）
 
 ```
 function volume(l,h,w) {
