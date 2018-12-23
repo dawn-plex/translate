@@ -3,30 +3,32 @@
 > * 译文出自：[阿里云翻译小组](https://github.com/dawn-teams/translate)
 > * 译文链接：[https://github.com/dawn-teams/translate/blob/master/articles/.md](https://github.com/dawn-teams/translate/blob/master/articles/.md)
 > * 译者：[也树](https://github.com/xdlrt)
-> * 校对者：[]()
+> * 校对者：[灵沼](https://github.com/su-dan)，[照天](https://github.com/zzwzzhao)
 
-As the number of different possible states and transitions between states in a user interface grows, managing styles and animations can quickly become complicated. Even a simple login form can have many different “user flows” and edge cases that need to be considered.
+# 有限状态机在 CSS 动画中的应用
+
+随着用户界面中可能出现的不同状态和状态间转换的数目的不断增长，样式和动画的管理很快就变得复杂起来。即使是一个简单的登录表单也可以有很多不同的“用户状态流”，并且有许多边界情况需要考虑、
 
 示例：[https://codepen.io/davidkpiano/pen/WKvPBP](https://codepen.io/davidkpiano/pen/WKvPBP)
 
-State machines are an excellent pattern for managing state transitions in user interfaces in an intuitive, declarative way. We’ve been using them a lot on [the Keyframers](https://keyframe.rs/) as a way to simplify otherwise complex animations and user flows, like the one above.
+状态机作为一种很好的编程范式，通过符合直觉和声明式的方式来管理用户界面状态间的过渡。我们已经在 [the Keyframers](https://keyframe.rs/) 中作为一种简化复杂动画和用户交互流的方式大量使用到了状态机。
 
-So, what is a state machine? Sounds technical, right? It’s actually more simple and intuitive than you might think. (Don’t look at [Wikipedia](https://en.wikipedia.org/wiki/Finite-state_machine) article just yet… trust me.)
+所以，什么是状态机呢？听起来是很技术向的一个名词，对吗？它实际上可能比你想的要更简单和直观。（不要直接看 [Wikipedia](https://en.wikipedia.org/wiki/Finite-state_machine) 的介绍，相信我）
 
-Let’s approach this from an animation perspective. Suppose you’re creating a loading animation, which can be in only one of four states at any given time:
+让我们从动画的角度来探索一下状态机。假设你在编写一个 loading 动画，在任意给定时间，它只能处于以下四个状态之一。
 
-- idle (not loading yet)
+- idle (还未进入 loading 状态)
 - loading
 - failure
 - success
 
-This makes sense — it should be impossible for your animation to be in both the “loading” and “success” states at the same time. But, it’s also important to consider how these states transition to each other.
+这很容易理解，你的动画不可能既处于 loading 状态又处于 success 状态中。但是，这些状态如何在彼此之间过渡是需要重点考虑的。
 
 ![](https://img.alicdn.com/tfs/TB1EwA8wbvpK1RjSZPiXXbmwXXa-398-341.png)
 
-Each arrow shows us how one state transitions to another state via events, and how some state transitions should be impossible (that is, you can’t go from the `success` state to the `failure` state). Each one of those arrows is an animation that you can implement, or more practically, a transition. If you’re wondering where the term “CSS transitions” comes from, it’s for describing how one visual “state” in CSS transitions to another visual “state.”
+每个箭头告诉我们一个状态是如何通过事件过渡到另一个状态的，并且有些状态是不可能互相转换的。（比如说你不可能从 success 状态到 failure 状态）。每一个箭头代表一个可以落地的动画，或者可以说是一个过渡。CSS 过渡是用来描述一个视觉状态在 CSS 中是如何转换至另一个视觉状态的。
 
-In other words, if you’re using CSS transitions, you’ve been using state machines all along and you didn’t even realize it! However, you were probably toggling between different “states” by adding and removing classes:
+换句话说，只要你在使用 CSS 过渡动画，你就已经在使用状态机的思想，但你可能没有意识到这一点。在不同状态间切换时你可能会使用添加或者移除类名的方式在实现：
 
 ```css
 .button {
@@ -42,11 +44,11 @@ In other words, if you’re using CSS transitions, you’ve been using state mac
 }
 ```
 
-This may work fine, but you have to make sure that the `is-loading` class is removed and the `is-loaded` class is added, because it's all too possible to have a `.button.is-loading.is-loaded`. This can lead to unintended side-effects.
+这样可以正常工作，但是你必须确保 `is-loading` 类名被移除并且 `is-loaded` 类名被添加，因为更有可能出现的情况是类名变成 `.button.is-loading.is-loaded`。这样可能会导致不符合预期的副作用。
 
-A better pattern for this is using [data-attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes). They’re useful because they represent a single value. When a part of your UI can only be in one state at a time (such as `loading` or `success` or `error`), updating a data-attribute is much more straightforward:
+一个更好的方式是使用 [data- 属性](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes)。它们只能展示一个值因此在这种场景下是有用的。当你的用户界面的某部分同时只能在一个状态下时（比如 `loading` 或 `success` 或 `error`），更新 `data-` 属性是更直接的：
 
-```
+```js
 const elButton = document.querySelector('.button');
 // set to loading
 elButton.dataset.state = 'loading';
@@ -54,7 +56,7 @@ elButton.dataset.state = 'loading';
 elButton.dataset.state = 'success';
 ```
 
-This naturally enforces that there is a single, finite state that your button can be in at any given time. You can use this `data-state `attribute to represent the different button states:
+这种方式自然地限制在任意给定的时机里你的按钮只存在单个状态。你可以使用 `data-state` 属性来表示不同的按钮状态：
 
 ```css
 .button[data-state="loading"] {
@@ -66,23 +68,24 @@ This naturally enforces that there is a single, finite state that your button ca
 }
 ```
 
-## Finite State Machines
-More formally, a finite state machine is made up of five parts:
+## 有限状态机
+通常来说，有限状态机由五部分组成：
 
-- A finite set of states (e.g., idle, loading, success, failure)
-- A finite set of events (e.g., FETCH, ERROR, RESOLVE, RETRY)
-- An initial state (e.g., idle)
-- A set of transitions (e.g., idle transitions to loading on the FETCH event)
-- Final states
+- 一系列有限的状态（如 idle，loading，success，failure）
+- 一系列有限的事件（如 FETCH，ERROR，RESOLVE，RETRY）
+- 一个初始状态（如 idle）
+- 一系列过渡方式（如 idle 通过 FETCH 事件过渡至 laoding）
+- 最终状态
 
-And it has a couple rules:
+它还有一些规范：
 
-- A finite state machine can only be in one state at any given time
-- All transitions must be deterministic, meaning for any given state and event, it must always go to the same predefined next state. No surprises!
-Now let’s look at how we can represent finite states in HTML and CSS.
+- 一个有限状态机同时只能在一种状态中
+- 所有的过渡方式必须是确定的，意味着任意给定的状态和时间，必定会导致相同的预定义的下一个状态。没有意外。
 
-## Contextual State
-Sometimes, you’ll need to style other UI components based on what state the app (or some parent component) is in. “Read-only” data-attributes can also be used for this, such as `data-show`:
+现在，让我们看看我们如何在 HTML 和 CSS 中表示有限状态机。
+
+## 上下文提供状态
+有时，你需要根据当前应用（或某个父组件）的状态来决定其它组件的样式。只读的 `data-` 属性同样也可以在这种场景下使用，比如：`data-show`：
 
 ```css
 .button[data-state="loading"] .text[data-show="loading"] {
@@ -93,11 +96,11 @@ Sometimes, you’ll need to style other UI components based on what state the ap
 }
 ```
 
-This is a way to signify that certain UI elements should only be shown in certain states. Then, it’s just a matter of adding [data-show="..."] to the respective elements that should be shown. If you want to handle a component being shown for multiple states, you can use the [space-separated attribute selector](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors) with HTML like the following:
+这是一种用来标记特定的 UI 元素仅仅应该在特定状态下展示的方式。然后再分别地在需要展示的元素上添加 `data-show="..."` 即可。如果你的组件在多个状态下都想显示，你可以像下面这样使用 [空格分割属性选择器](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors)。
 
 ```js
 <button class="button" data-state="idle">
-  <!-- Show download icon while in idle or loading states -->
+  <!-- 处于 idle 和 loading 状态时展示下载图标 -->
   <span class="icon" data-show="idle loading"></span>
   <span class="text" data-show="idle">Download</span>
   <span class="text" data-show="loading">Downloading...</span>
@@ -105,7 +108,7 @@ This is a way to signify that certain UI elements should only be shown in certai
 </button>
 ```
 
-And with the corresponding CSS:
+这是对应的 CSS：
 
 ```css
 /* ... */
@@ -114,7 +117,7 @@ And with the corresponding CSS:
 }
 ```
 
-The `data-state` attribute can be modified using JavaScript:
+`data-state` 属性可以使用 JavaScript 进行改变：
 
 ```js
 const elButton = document.querySelector('.button');
@@ -126,12 +129,13 @@ setButtonState('loading');
 // the button's data-state attribute is now "loading"
 ```
 
-## Dynamic Data-Attribute Styles
-As your app grows, adding all of these data-attribute rules can make your stylesheet get bigger and harder to maintain, since you have to maintain the different states in both the client JavaScript files and in the stylesheet. It can also make specificity complicated since each class and data-attribute selector adds to the specificity weight. To mitigate this, we can instead use a dynamic `data-active` attribute that follows these two rules:
+## 动态 data- 属性样式
+随着应用的逐渐迭代，将所有的 `data-` 属性规则添加进来会让样式表不断膨胀并且难以维护，因为你在 JavaScript 文件和样式表中都需要维护这些不同的状态。同时因为每个类名和 `data-` 属性添加了不同的权重，也会让权重变得异常复杂。为了减少这些问题带来的影响，我们可以依照以下两条原则使用动态的 `data-active` 属性：
 
-When the overall state matches a [data-show="..."] state, the element should have the data-active attribute.
-When the overall state doesn’t match any [data-hide="..."] state, the element should also have the data-active attribute.
-Here’s how this can be implemented in JavaScript:
+- 当匹配到 `data-show="..."` 属性时，元素应当具有 `data-active` 属性。
+- 当没有匹配到 `data-hide="..."` 属性时，元素也应当具有 `data-active` 属性。
+
+下面是在 JavaScrit 实际应用的例子：
 
 ```js
 const elButton = document.querySelector('.button');
@@ -152,7 +156,7 @@ function setButtonState(state) {
 setButtonState('loading');
 ```
 
-Now, our above show/hide styles can be simplified:
+现在，我们上面的展示隐藏的样式可以被简化：
 
 ```css
 .text[data-active] {
@@ -163,8 +167,8 @@ Now, our above show/hide styles can be simplified:
 }
 ```
 
-## Declaratively Visualizing States
-So far, so good. However, we want to prevent function calls to change state littered throughout our UI business logic. We can create a state machine transition function that contains the logic for what the next state should be given the current state and event, and returns that next state. With a switch-case block, here’s how that might look:
+## 声明可视化的状态
+目前为止，一切都好。但是我们想防止改变状态的函数包含业务逻辑，我们可以创建一个状态机转换函数，包含当前状态和触发事件后转换到的下个状态和返回此状态的逻辑。通过使用 switch 代码块，可能像下面这样：
 
 ```js
 // ...
@@ -208,7 +212,7 @@ send('FETCH');
 // => button state is now 'loading'
 ```
 
-The switch-case block codifies the transitions between states based on events. We can simplify this by using objects instead:
+Switch 代码块基于事件对状态之间的转换进行编码，我们可以使用对象来简化它：
 
 ```js
 // ...
@@ -244,36 +248,37 @@ function transitionButton(currentState, event) {
 // use the same send() function
 ```
 
-Not only does this look cleaner than the switch-case code block, but it is also JSON-serializable, and we can declaratively iterate over the states and events. This allows us to copy-paste the `buttonMachine` definition code into a visualization tool, like [xviz](https://musing-rosalind-2ce8e7.netlify.com/?machine=%7B%22initial%22%3A%22idle%22%2C%22states%22%3A%7B%22idle%22%3A%7B%22on%22%3A%7B%22FETCH%22%3A%22loading%22%7D%7D%2C%22loading%22%3A%7B%22on%22%3A%7B%22ERROR%22%3A%22failure%22%2C%22RESOLVE%22%3A%22success%22%7D%7D%2C%22failure%22%3A%7B%22on%22%3A%7B%22RETRY%22%3A%22loading%22%7D%7D%2C%22success%22%3A%7B%7D%7D%7D):
+不仅这种方式看起来比 Switch 代码块更干净，同时也是可以 JSON 序列化的。同时我们可以声明式地对状态和事件进行枚举。这就可以让我们将 `buttonMachine` 的代码复制粘贴至可视化工具中，比如[xviz](https://musing-rosalind-2ce8e7.netlify.com/?machine=%7B%22initial%22%3A%22idle%22%2C%22states%22%3A%7B%22idle%22%3A%7B%22on%22%3A%7B%22FETCH%22%3A%22loading%22%7D%7D%2C%22loading%22%3A%7B%22on%22%3A%7B%22ERROR%22%3A%22failure%22%2C%22RESOLVE%22%3A%22success%22%7D%7D%2C%22failure%22%3A%7B%22on%22%3A%7B%22RETRY%22%3A%22loading%22%7D%7D%2C%22success%22%3A%7B%7D%7D%7D)：
 
 ![](https://img.alicdn.com/tfs/TB1Bak7wirpK1RjSZFhXXXSdXXa-650-400.png)
 
-## Summary
-The state machine pattern makes it much simpler to handle state transitions in your app, and also makes it cleaner to apply transition styles in your CSS. To summarize, we introduced the following data-attributes:
+## 总结
+状态机的模式让应用中状态的处理更简便，并且让 CSS 中的样式过渡更简洁。总结一下，我们介绍了以下的 `data-` 属性：
 
-- `data-state` represents the finite state for the component (e.g., `data-state="loading"`)
-- `data-show` dictates that the element should be `data-active` if one of the states matches the overall `data-state` (e.g., `data-show`="idle loading")
-- `data-hide` dictates that the element should not be `data-active` if one of the states matches the overall `data-state `(e.g., `data-hide="success error"`)
-- `data-active` is dynamically added to the above `data-show` and `data-hide` elements when they are "matched" by the current `data-state`.
+- `data-state` 表示组件上有限的状态（如 `data-state="loading"`）
+- `data-show` 决定了当其中一种状态匹配到 `data-state` 中的状态时元素需要增加 `data-active` 属性。（如 `data-state="idle loading"`）
+- `data-hide` 决定了当其中一种状态匹配到 `data-state` 中的状态时元素需要移除 `data-active` 属性。（如 `data-state="success error"`）
+- `data-active` 在当前元素 `data-show` 和 `data-hide` 属性匹配到 `data-state` 中的状态时，动态添加至以上元素。
 
-And the following code patterns:
+还有以下的编程范式，使用以下属性，通过 JavaScript 对象定义一个状态机：
 
-- Defining a `machine` definition as a JavaScript object with the following properties:
-- `initial` - the initial state of the machine (e.g., `"idle"`)
-- `states` - a mapping of states to "transition objects" with the on property:
-- `on` - a mapping of events to next states (e.g., `FETCH: "loading"`)
-- Creating a `transition(currentState, event)` function that returns the next state by looking it up from the above machine definition
-- Creating a `send(event)` function that:
-1. calls `transition(...)` to determine the next state
-2. sets the `currentState` to that next state
-3. executes side effects (sets the proper data-attributes, in this case).
+- `initial` - 状态机的初始状态（如 `idle`）
+- `states` - 一个包含过渡方式和状态的 Map
+- `on` - 标识了转换至下个状态的事件（如 `FETCH: "loading"`）
+- 创建一个 `transition(currentState, event)` 函数，根据当前状态在状态机中查找下一个状态
+- 创建一个 `send(event)` 函数，包含以下特点：
+  1. 调用 `transition(...)` 方法来决定下一个状态
+  2. 设置当前状态为获取到的下一个状态
+  3. 执行相应的副作用（在这里是设置合适的 `data-` 属性）
 
-As a bonus, we’re able to visualize our app’s behavior from that machine definition! We can also manually test each state by calling `setButtonState(...)` to the desired state, which will set the proper data-attributes and allow us to develop and debug our components in specific states. This eliminates the frustration of having to "go through the flow" in order to get our app to the proper state.
+我们同样可以通过调用 `setButtonState(...)` 人工测试想要的状态，这样就可以设置合适的 `data-` 属性和在特定状态下帮助我们开发和 debug 组件。这样可以减少为了到达合适的状态而不得不进行的一整套繁琐的流程。
 
-## Going further
-If you want to dive deeper into state machines (and their scalable companion, “statecharts”), check out the below resources:
+## 更进一步
+如果你想更深地探究状态机（和它延伸出来的概念，“状态表”），可以查阅下面的资源：
 
-[xstate](https://github.com/davidkpiano/xstate) is a library I created that facilitates the creation and execution of state machines and statecharts, with support for nested/parallel states, actions, guards, and more. By reading this article, you already know how to use it:
+[xstate](https://github.com/davidkpiano/xstate) 是一个能够帮助更好地创建和使用状态机和状态图的库，支持嵌套/扁平的状态，行为等等。通过阅读这篇文章，你已经知道如何去使用它了：
+
+
 ```js
 import { Machine } from 'xstate';
 const buttonMachine = Machine({
@@ -290,9 +295,8 @@ send('FETCH');
 // => button state is now 'loading'
 ```
 
-[The World of Statecharts](https://statecharts.github.io/) is a fantastic resource by [Erik Mogensen](https://twitter.com/mogsie) that thoroughly explains statecharts and how it’s applicable to user interfaces
-[Spectrum Statecharts community](https://spectrum.chat/statecharts) is full of developers who are helpful, passionate, and eager to learn and use state machines and statecharts
-[Learn State Machines](https://learnstatemachines.com/) is a course that teaches you the fundamental concepts of statecharts through example — by building an Instagram clone and more!
-[React-Automata](https://github.com/MicheleBertoli/react-automata/) is a library by [Michele Bertoli](https://twitter.com/michelebertoli) that uses xstate and allows you use statecharts in React, with many benefits, including automatically generated snapshot tests!
-I talked with [Jon Bellah](https://jonbellah.com/articles/intro-state-machines) on Shop Talk Show about Working with [State Machines](https://shoptalkshow.com/episodes/327-working-state-machines/), if you want to learn more about the benefits of using them in front-end UIs.
-And finally, I’m working on an interactive statechart visualizer, editor, generative testing and analysis tool for easily creating statecharts for user interfaces. For more info, and to be notified when the beta releases, visit [uistates.com](https://uistates.com/). 🚀
+[The World of Statecharts](https://statecharts.github.io/) 是由 [Erik Mogensen](https://twitter.com/mogsie) 整理的非常棒的资源，可以透彻地解释状态表和如何在用户界面上应用。
+[Spectrum Statecharts community](https://spectrum.chat/statecharts) 有许多热心并且乐于助人，同时对 状态机和状态表很有兴趣的开发者。
+[Learn State Machines](https://learnstatemachines.com/) 是一个通过构建 Instagram 的应用示例来教你学习状态表基础概念的课程。
+[React-Automata](https://github.com/MicheleBertoli/react-automata/) 是 [Michele Bertoli](https://twitter.com/michelebertoli) 开发的使用 xstate 的库，它能够让你在 React 中使用状态表，有很多好处，比如自动生成测试快照。
+如果你想了解更多前端用户界面中状态机的好处，可以查看我曾经在 Shop Talk Show 和 [Jon Bellah](https://jonbellah.com/articles/intro-state-machines) 对 [状态机](https://shoptalkshow.com/episodes/327-working-state-machines/) 的讨论。
