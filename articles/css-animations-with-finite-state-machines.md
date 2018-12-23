@@ -3,11 +3,11 @@
 > * 译文出自：[阿里云翻译小组](https://github.com/dawn-teams/translate)
 > * 译文链接：[https://github.com/dawn-teams/translate/blob/master/articles/.md](https://github.com/dawn-teams/translate/blob/master/articles/.md)
 > * 译者：[也树](https://github.com/xdlrt)
-> * 校对者：[灵沼](https://github.com/su-dan)
+> * 校对者：[灵沼](https://github.com/su-dan)，[照天](https://github.com/zzwzzhao)
 
 # 有限状态机在 CSS 动画中的应用
 
-随着用户界面中可能出现的不同状态和过渡状态数目的不断增长，样式和动画的管理很快就变得复杂起来。即使是一个简单的登录表单也可以有很多不同的“用户状态流”，并且有许多边界情况需要考虑、
+随着用户界面中可能出现的不同状态和状态间转换的数目的不断增长，样式和动画的管理很快就变得复杂起来。即使是一个简单的登录表单也可以有很多不同的“用户状态流”，并且有许多边界情况需要考虑、
 
 示例：[https://codepen.io/davidkpiano/pen/WKvPBP](https://codepen.io/davidkpiano/pen/WKvPBP)
 
@@ -26,7 +26,7 @@
 
 ![](https://img.alicdn.com/tfs/TB1EwA8wbvpK1RjSZPiXXbmwXXa-398-341.png)
 
-每个箭头告诉我们一个状态是如何通过事件过渡到另一个状态的，并且有些状态是不可能互相转换的。（比如说你不可能从 success 状态到 failure 状态）。每一个箭头代表一个可以落地的动画，或者可以说是一个过渡状态。CSS 过渡是用来描述一个视觉状态在 CSS 中是如何转换至另一个视觉状态的。
+每个箭头告诉我们一个状态是如何通过事件过渡到另一个状态的，并且有些状态是不可能互相转换的。（比如说你不可能从 success 状态到 failure 状态）。每一个箭头代表一个可以落地的动画，或者可以说是一个过渡。CSS 过渡是用来描述一个视觉状态在 CSS 中是如何转换至另一个视觉状态的。
 
 换句话说，只要你在使用 CSS 过渡动画，你就已经在使用状态机的思想，但你可能没有意识到这一点。在不同状态间切换时你可能会使用添加或者移除类名的方式在实现：
 
@@ -46,7 +46,7 @@
 
 这样可以正常工作，但是你必须确保 `is-loading` 类名被移除并且 `is-loaded` 类名被添加，因为更有可能出现的情况是类名变成 `.button.is-loading.is-loaded`。这样可能会导致不符合预期的副作用。
 
-一个更好的方式是使用 [data- 属性](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes)。它们只能展示一个值因此在这种场景下是有用的。当你的用户界面的某部分同时只在一个状态下时（比如 `loading` 或 `success` 或 `error`），更新 `data-` 属性是更直接的：
+一个更好的方式是使用 [data- 属性](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes)。它们只能展示一个值因此在这种场景下是有用的。当你的用户界面的某部分同时只能在一个状态下时（比如 `loading` 或 `success` 或 `error`），更新 `data-` 属性是更直接的：
 
 ```js
 const elButton = document.querySelector('.button');
@@ -168,7 +168,7 @@ setButtonState('loading');
 ```
 
 ## 声明可视化的状态
-目前为止，一切都好。但是现在我们想要防止函数调用在改变状态的时候直接侵入业务逻辑，我们可以创建一个状态机转换函数，包含当前状态和触发事件后转换到的下个状态和返回此状态的逻辑。通过使用 switch 代码块，可能像下面这样：
+目前为止，一切都好。但是我们想防止改变状态的函数包含业务逻辑，我们可以创建一个状态机转换函数，包含当前状态和触发事件后转换到的下个状态和返回此状态的逻辑。通过使用 switch 代码块，可能像下面这样：
 
 ```js
 // ...
@@ -248,7 +248,7 @@ function transitionButton(currentState, event) {
 // use the same send() function
 ```
 
-不仅这种方式看起来比 Switch 代码块更干净，同时也是可以 JSON 序列化的。同时我们可以声明式地基于状态和时间进行枚举。这就可以让我们将 `buttonMachine` 的定义复制粘贴至可视化工具中，比如[xviz](https://musing-rosalind-2ce8e7.netlify.com/?machine=%7B%22initial%22%3A%22idle%22%2C%22states%22%3A%7B%22idle%22%3A%7B%22on%22%3A%7B%22FETCH%22%3A%22loading%22%7D%7D%2C%22loading%22%3A%7B%22on%22%3A%7B%22ERROR%22%3A%22failure%22%2C%22RESOLVE%22%3A%22success%22%7D%7D%2C%22failure%22%3A%7B%22on%22%3A%7B%22RETRY%22%3A%22loading%22%7D%7D%2C%22success%22%3A%7B%7D%7D%7D)：
+不仅这种方式看起来比 Switch 代码块更干净，同时也是可以 JSON 序列化的。同时我们可以声明式地对状态和事件进行枚举。这就可以让我们将 `buttonMachine` 的代码复制粘贴至可视化工具中，比如[xviz](https://musing-rosalind-2ce8e7.netlify.com/?machine=%7B%22initial%22%3A%22idle%22%2C%22states%22%3A%7B%22idle%22%3A%7B%22on%22%3A%7B%22FETCH%22%3A%22loading%22%7D%7D%2C%22loading%22%3A%7B%22on%22%3A%7B%22ERROR%22%3A%22failure%22%2C%22RESOLVE%22%3A%22success%22%7D%7D%2C%22failure%22%3A%7B%22on%22%3A%7B%22RETRY%22%3A%22loading%22%7D%7D%2C%22success%22%3A%7B%7D%7D%7D)：
 
 ![](https://img.alicdn.com/tfs/TB1Bak7wirpK1RjSZFhXXXSdXXa-650-400.png)
 
