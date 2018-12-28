@@ -6,106 +6,55 @@
 > * 校对者：[也树](https://github.com/xdlrt)，[靖鑫](https://github.com/luckyjing)
 
 <!-- 正文 -->
-# The how and why on React’s usage of linked list in Fiber to walk the component’s tree
-### The main algorithm of the work loop in React’s reconciler
+# 如何以及为什么React Fiber使用链表遍历组件树
+### React调度器中工作循环的主要算法
 
-![](https://cdn-images-1.medium.com/max/1600/1*d8GcL9UNG0w9n_WW5TCWRw.png)
-<p class="figcaption_hack" style="text-align: center;">Work loop representation from [an amazing talk by Lin
-Clark](https://www.youtube.com/watch?v=ZCuYPiUIONs) at ReactConf 2017</p>
+![](https://img.alicdn.com/tfs/TB1FuUbyMHqK1RjSZFPXXcwapXa-984-432.png)
+<p class="figcaption_hack" style="text-align: center;">工作循环配图，来自Lin Clark
+在ReactConf 2017精彩的[演讲](https://www.youtube.com/watch?v=ZCuYPiUIONs)</p>
 
-![](https://cdn-images-1.medium.com/max/1600/1*7CImQFZPe816uJN9FPSWxQ.png)
+![](https://img.alicdn.com/tfs/TB1frMdyNTpK1RjSZFMXXbG_VXa-743-2.png)
 
-To educate myself and the community, I spend a lot of time [reverse-engineering
-web
-technologies](https://blog.angularindepth.com/practical-application-of-reverse-engineering-guidelines-and-principles-784c004bb657)
-and writing about my findings. In the last year, I’ve focused mostly on Angular
-sources which resulted in the biggest Angular publication on the web —
-[Angular-In-Depth](https://blog.angularindepth.com/). **Now the time has come to
-dive deep into React**. [Change
-detection](https://medium.freecodecamp.org/what-every-front-end-developer-should-know-about-change-detection-in-angular-and-react-508f83f58c6a)
-has become the main area of my expertise in Angular, and with some patience and
-*a lot of debugging,* I hope to soon achieve that level in React.
+为了教育我自己和社区，我花了很多时间在[Web技术逆向工程](https://blog.angularindepth.com/practical-application-of-reverse-engineering-guidelines-and-principles-784c004bb657)和写我的发现。在过去的一年里，我主要专注在Angular的源码，发布了网路上最大的Angular出版物—[Angular-In-Depth](https://blog.angularindepth.com/)。**现在我已经把主要精力投入到React中**。[变化检测](https://medium.freecodecamp.org/what-every-front-end-developer-should-know-about-change-detection-in-angular-and-react-508f83f58c6a)已经成为我在Angular的专长的主要领域，只要有一定的耐心和*大量的调试*，我希望能很快在React中达到这个水平。
+在React中, 变化检测机制通常称为 "协调" 或 "渲染"，而Fiber是其最新实现。归功于它的底层架构，它提供能力去实现许多有趣的特性，比如执行非阻塞渲染，根据优先级执行更新，在后台预渲染内容等。这些特性在[并发React哲学](https://twitter.com/acdlite/status/1056612147432574976)中被称为**时间分片**。
 
-In React, the mechanism of change detection is often referred to as
-reconciliation or rendering, and Fiber is its newest implementation. Due to the
-underlying architecture, it provides capabilities to implement many interesting
-features like performing non-blocking rendering, applying updates based on the
-priority and pre-rendering content in the background. These features are
-referred to as **time-slicing** in the [Concurrent React
-philosophy](https://twitter.com/acdlite/status/1056612147432574976).
+除了解决应用程序开发者的实际问题之外，**这些机制的内部实现从工程角度来看也具有广泛的吸引力。源码中有如此丰富的知识可以帮助我们成长为更好地开发者。**
 
-Besides solving real problems of application developers, **the internal
-implementation of these mechanisms has a wide appeal from the engineering
-perspective. There’s such a wealth of knowledge in the sources that will help us
-grow as developers.**
+如果你今天谷歌“React Fiber”，你会在搜索结果中看到很多文章。但是除了[Andrew Clark的笔记](https://github.com/acdlite/react-fiber-architecture)，所有文章都是相当高层次的解释。在本文中，我将参考Andrew Clark的笔记，**对Fiber中一些特别重要的概念进行详细说明**。一旦我们完成，你将有足够的知识来理解[Lin Clark在ReactConf 2017上的一次非常精彩的演讲](https://www.youtube.com/watch?v=ZCuYPiUIONs)中的工作循环配图。*这是你需要去看的一次演讲*。但是，在你花了一点时间阅读本文之后，它对你来说会更有意义。
 
-If you Google “React Fiber” today you’re going to see quite a lot articles in
-the search results. All of them, though, except for the [notes by Andrew
-Clark](https://github.com/acdlite/react-fiber-architecture) are pretty
-high-level explanations. In this article, I’ll refer to this resource and**
-provide an elaborate explanation for some particularly important concepts in
-Fiber**. Once we’ve finished, you’ll have enough knowledge to understand the
-work loop representation from [a very good talk by Lin
-Clark](https://www.youtube.com/watch?v=ZCuYPiUIONs) at ReactConf 2017. *That’s
-the one talk you need to see.* But it’ll make a lot more sense to you after
-you’ve spent a little time in the sources.
+[这篇文章开启了一个React Fiber内部实现的系列文章。](https://medium.com/react-in-depth/inside-fiber-in-depth-overview-of-the-new-reconciliation-algorithm-in-react-e1c04700ef6e)通过了解大约70%实现的内部细节，还有三篇关于协调和渲染机制的文章。
 
-[This post opens a series on React’s Fiber
-internals.](https://medium.com/react-in-depth/inside-fiber-in-depth-overview-of-the-new-reconciliation-algorithm-in-react-e1c04700ef6e)
-I’m about 70% through understanding the internal details of the implementation
-and have three more articles on reconciliation and rendering mechanism in the
-works.
+> 我在[ag-Grid](https://react-grid.ag-grid.com/?utm_source=medium&utm_medium=blog&utm_campaign=reactcustom)担任开发人员。如果您想了解数据表格或寻找终极的React数据表格解决方案，请查看这篇指南 “[在5分钟内开始使用React网格](http://blog.ag-grid.com/index.php/2018/08/07/get-started-with-react-grid-in-5-minutes/?utm_source=medium&utm_medium=blog&utm_campaign=getstartedreact)”尝试一下。
+我很乐意回答您的任何问题。[请关注我！](https://twitter.com/maxim_koretskyi)
 
-> I work as a developer advocate at
-> [ag-Grid](https://react-grid.ag-grid.com/?utm_source=medium&utm_medium=blog&utm_campaign=reactcustom).
-If you’re curious to learn about data grids or looking for the ultimate react
-data grid solution, give it a try with the guide “[Get started with React grid
-in 5
-minutes](http://blog.ag-grid.com/index.php/2018/08/07/get-started-with-react-grid-in-5-minutes/?utm_source=medium&utm_medium=blog&utm_campaign=getstartedreact)”.
-I’m happy to answer any questions you may have. [And follow me to stay
-tuned!](https://twitter.com/maxim_koretskyi)
+让我们开始吧!
 
-Let’s get started!
+![](https://img.alicdn.com/tfs/TB1frMdyNTpK1RjSZFMXXbG_VXa-743-2.png)
 
-![](https://cdn-images-1.medium.com/max/1600/1*7CImQFZPe816uJN9FPSWxQ.png)
+### 基础
 
-### Setting the background
+Fiber的架构有两个主要阶段：协调/渲染和提交。在源码中，协调阶段通常被称为“渲染阶段”。这是React遍历组件树的阶段，并且：
 
-Fiber’s architecture has two major phases: reconciliation/render and commit. In
-the source code the reconciliation phase is mostly referred to as the “render
-phase”. This is the phase when React walks the tree of components and:
+* 更新状态和属性
+* 调用生命周期钩子
+* 获取组件的`children`
+* 将它们与之前的`children`进行对比
+* 并计算出需要执行的DOM更新
 
-* updates state and props,
-* calls lifecycle hooks,
-* retrieves the children from the component,
-* compares them to the previous children,
-* and figures out the DOM updates that need to be performed.
+**所有这些活动都被称为Fiber内部的工作。** 需要完成的工作类型取决于React Element的类型。 例如，对于
+`Class Component` React需要实例化一个类，然而对于`Functional Component`却不需要。如果有兴趣，[在这里](https://github.com/facebook/react/blob/340bfd9393e8173adca5380e6587e1ea1a23cefa/packages/shared/ReactWorkTags.js#L29-L28)
+您可以看到Fiber中的所有类型的工作目标。 这些活动正是Andrew在这里谈到的：
 
-**All these activities are referred to as work inside Fiber**. The type of work
-that needs to be done depends on the type of the React Element. For example, for
-a `Class Component` React needs to instantiate a class, while it doesn't do it
-for a `Functional Component`. If interested,
-[here](https://github.com/facebook/react/blob/340bfd9393e8173adca5380e6587e1ea1a23cefa/packages/shared/ReactWorkTags.js#L29-L28)
-you can see all types of work targets in Fiber. These activities are exactly
-what Andrew talks about here:
+> 在处理UI时，问题是如果**一次执行太多工作**，可能会导致动画丢帧...
 
-> When dealing with UIs, the problem is that if **too much work is executed all at
-> once**, it can cause animations to drop frames…
+具体什么是*一次太多*？好吧，基本上，如果React要**同步**遍历整个组件树并为每个组件执行工作，它可能会运行超过16毫秒，以便应用程序代码执行其逻辑。这将导致帧丢失，导致不顺畅的视觉效果。
 
-Now what about that ‘*all at once’* part? Well, basically, if React is going to
-walk the entire tree of components **synchronously** and perform work for each
-component, it may run over 16 ms available for an application code to execute
-its logic. And this will cause frames to drop causing stuttering visual effects.
+那么有好的办法吗?
 
-So this can be helped?
+> 较新的浏览器（和React Native）实现了有助于解决这个问题的API ...
 
-> Newer browsers (and React Native) implement APIs that help address this exact
-> problem…
-
-The new API he talks about is the
-[requestIdleCallback](https://developers.google.com/web/updates/2015/08/using-requestidlecallback)
-global function that can be used to queue a function to be called during a
-browser’s idle periods. Here’s how you would use it by itself:
+他提到的新API是[requestIdleCallback](https://developers.google.com/web/updates/2015/08/using-requestidlecallback)
+全局函数，可用于对函数进行排队，这些函数会在浏览器空闲时被调用。以下是您将如何使用它:
 
 ```js
 requestIdleCallback((deadline)=>{
@@ -113,97 +62,58 @@ requestIdleCallback((deadline)=>{
 });
 ```
 
-If I now open the console and execute the code above, Chrome logs `49.9 false`.
-It basically tells me that I have `49.9 ms` to do whatever work I need to do and
-I haven’t yet used up all allotted time, otherwise the `deadline.didTimeout`
-would be `true`. Keep in mind that `timeRemaining` can change as soon as a
-browser gets some work to do, so it should be constantly checked.
+如果我现在打开控制台并执行上面的代码，Chrome会打印`49.9 false`。
+它基本上告诉我，我有`49.9ms`去做我需要做的任何工作，并且我还没有用完所有分配的时间，否则`deadline.didTimeout`
+将会是`true`。请记住`timeRemaining`可能在浏览器被分配某些工作后立即更改，因此应该不断检查。
 
-> `requestIdleCallback` is actually a bit too restrictive and [is not executed
-> often
-enough](https://github.com/facebook/react/issues/13206#issuecomment-418923831)
-to implement smooth UI rendering, so React team [had to implement their own
-version](https://github.com/facebook/react/blob/eeb817785c771362416fd87ea7d2a1a32dde9842/packages/scheduler/src/Scheduler.js#L212-L222).
+> `requestIdleCallback` 实际上有点过于严格，并且[执行频次不足](https://github.com/facebook/react/issues/13206#issuecomment-418923831)以实现流畅的UI渲染，因此React团队[必须实现自己的版本](https://github.com/facebook/react/blob/eeb817785c771362416fd87ea7d2a1a32dde9842/packages/scheduler/src/Scheduler.js#L212-L222)。
 
-Now if we put all the activities Reacts performs on a component into the
-function `performWork`, and use `requestIdleCallback` to schedule the work, our
-code could look like this:
+现在，如果我们将Reacts对组件执行的所有活动放入函数`performWork`, 并使用`requestIdleCallback`来安排工作，我们的代码可能如下所示：
 
 ```js
 requestIdleCallback((deadline) => {
-    // while we have time, perform work for a part of the components tree
+    // 当我们有时间时，为组件树的一部分执行工作    
     while ((deadline.timeRemaining() > 0 || deadline.didTimeout) && nextComponent) {
         nextComponent = performWork(nextComponent);
     }
 });
 ```
 
-We perform the work on one component and then return the reference to the next
-component to process. This would work, if not for one thing. You can’t process
-the entire tree of components synchronously, as in the [previous implementation
-of the reconciliation
-algorithm](https://reactjs.org/docs/codebase-overview.html#stack-reconciler).
-And that’s the problem Andrew talks about here:
+我们对一个组件执行工作，然后返回要处理的下一个组件的引用。如果不是因为一件事，这将有效。您不能同步地处理整个组件树，如[前面的协调算法实现](https://reactjs.org/docs/codebase-overview.html#stack-reconciler)中所示。
+这就是Andrew在这里谈到的问题：
 
-> in order to use those APIs, you need a way to break rendering work into
-> incremental units
+> 为了使用这些API，您需要一种方法将渲染工作分解为增量单元
 
-So to solve this problem, React had to re-implement the algorithm for walking
-the tree **from the synchronous recursive model that relied on the built-in
-stack to an asynchronous model with linked list and pointers.** And that’s what
-Andrew writes about here:
+因此，为了解决这个问题，React必须重新实现遍历树的算法，**从依赖于内置堆栈的同步递归模型，变为具有链表和指针的异步模型**。这就是Andrew在这里写的：
 
-> If you rely only on the [built-in] call stack, it will keep doing work until the
-> stack is empty…Wouldn’t it be great if we could interrupt the call stack at will
-and manipulate stack frames manually? That’s the purpose of React Fiber. **Fiber
-is re-implementation of the stack, specialized for React components**. You can
-think of a single fiber as a virtual stack frame.
+> 如果你只依赖于[内置]调用堆栈，它将继续工作直到堆栈为空。。。
+> 如果我们可以随意中断调用堆栈并手动操作堆栈帧，那不是很好吗？这就是React Fiber的目的。 **Fiber是堆栈的重新实现，专门用于React组件**。 您可以将单个Fiber视为一个虚拟堆栈帧。
 
-And that’s what I’m going to explain now.
+这就是我现在将要讲解的内容。
 
-![](https://cdn-images-1.medium.com/max/1600/1*7CImQFZPe816uJN9FPSWxQ.png)
+![](https://img.alicdn.com/tfs/TB1frMdyNTpK1RjSZFMXXbG_VXa-743-2.png)
 
-#### A word about the stack
+#### 关于堆栈的一个词
 
-I assume you’re all familiar with the notion of a call stack. This is what you
-see in your browser’s debugging tools if you pause code at a breakpoint. Here
-are a few relevant quotes and diagrams [from
-Wikipedia](https://en.wikipedia.org/wiki/Call_stack?fbclid=IwAR06VWEQnwoEawg0NsoR8loBJwIbmPWsXXKqbAuOFBjkawHThK7zlIBsJ_U#Structure):
+我假设你们都熟悉调用堆栈的概念。如果您在断点处暂停代码，则可以在浏览器的调试工具中看到这一点。以下是[维基百科](https://en.wikipedia.org/wiki/Call_stack?fbclid=IwAR06VWEQnwoEawg0NsoR8loBJwIbmPWsXXKqbAuOFBjkawHThK7zlIBsJ_U#Structure)的一些相关引用和图表：
 
-> In computer science, a **call stack** is a stack data structure that stores
-> information about the active subroutines of a computer program… the main reason
-for having call stack is **to keep track of the point** to which each active
-subroutine should return control when it finishes executing… A **call stack** is
-composed of **stack frames**… Each stack frame corresponds to a call to a
-subroutine which has not yet terminated with a **return**. For example, if a
-subroutine named `DrawLine` is currently running, having been called by a
-subroutine `DrawSquare`, the top part of the call stack might be laid out like
-in the adjacent picture.
+> 在计算机科学中，**调用堆栈**是一种堆栈数据结构，它存储有关计算机程序的活跃子程序的信息...调用堆栈存在的主要原因是跟踪每个活跃子程序在完成执行时应该返回控制的位置...调用堆栈由堆栈帧组成...每个堆栈帧对应于一个尚未返回终止的子例程的调用。例如，如果由子程序`DrawSquare`调用的一个名为`DrawLine`的子程序当前正在运行，则调用堆栈的顶部可能会像在下面的图片中一样。
 
-![](https://cdn-images-1.medium.com/max/1600/1*WqEscsoRHItF0p4fZjHfsA.png)
+![](https://img.alicdn.com/tfs/TB1Thz4ySrqK1RjSZK9XXXyypXa-513-419.png)
 
 
-#### Why is the stack relevant to React?
+#### 为什么堆栈与React相关？
 
-As we defined in the first part of the article, Reacts walks the components tree
-during the reconciliation/render phase and performs some work for components.
-The previous implementation of the reconciler used the synchronous recursive
-model that relied on the built-in stack to walk the tree. [The official doc on
-reconciliation](https://reactjs.org/docs/reconciliation.html#recursing-on-children)
-describe this process and talk a lot about recursion:
+正如我们在本文的第一部分中所定义的，Reacts在协调/渲染阶段遍历组件树，并为组件执行一些工作。协调器的先前实现使用依赖于内置堆栈的同步递归模型来遍历树。[关于协调的官方文档](https://reactjs.org/docs/reconciliation.html#recursing-on-children)描述了这个过程，并谈了很多关于递归的内容：
 
-> By default, when recursing on the children of a DOM node, React just iterates
-> over both lists of children at the same time and generates a mutation whenever
-there’s a difference.
+> 默认情况下，当对DOM节点的子节点进行递归时，React会同时迭代两个子节点列表，并在出现差异时生成突变。
 
-If you think about it, **each recursive call adds a frame to the stack. And it
-does so synchronously**. Suppose we have the following tree of components:
+如果你考虑一下，**每个递归调用都会向堆栈添加一个帧。并且是同步的**。假设我们有以下组件树：
 
-![](https://cdn-images-1.medium.com/max/1600/1*TYWa1WAZ9iLip-rwBNPGEQ.png)
+![](https://img.alicdn.com/tfs/TB1Dkv8ySzqK1RjSZFLXXcn2XXa-484-513.png)
 
 
-Represented as objects with the `render` function. You can think of them as
-instances of components:
+用`render`函数表示为对象。你可以把它们想象成组件实例：
 
 ```js
 const a1 = {name: 'a1'};
@@ -225,14 +135,11 @@ d1.render = () => [];
 d2.render = () => [];
 ```
 
-React needs to iterate the tree and perform work for each component. To
-simplify, the work to do is to log the name of the current component and
-retrieve its children. Here’s how we do it with recursion.
+React需要迭代树并为每个组件执行工作。为了简化，要做的工作是打印当前组件的名字和获取它的children。下面是我们如何通过递归来完成它。
 
-#### Recursive traversal
+#### 递归遍历
 
-The main function that iterates over the tree is called `walk` in the
-implementation below:
+循环遍历树的主要函数称为`walk`，实现如下：
 
 ```js
 walk(a1);
@@ -248,45 +155,33 @@ function doWork(o) {
 }
 ```
 
-Here’s the output we’re getting:
+这里是我的得到的输出：
 
 `a1, b1, b2, c1, d1, d2, b3, c2
 `
 
-If you don’t feel confident with recursions, check out [my in-depth article on
-recursion](https://medium.freecodecamp.org/learn-recursion-in-10-minutes-e3262ac08a1).
+如果您对递归没有信心，请查看[我关于递归的深入文章](https://medium.freecodecamp.org/learn-recursion-in-10-minutes-e3262ac08a1)。
 
-A recursive approach is intuitive and well-suited for walking the trees. But as
-we discovered, it has limitations. The biggest one is that we can’t break the
-work into incremental units. We can’t pause the work at a particular component
-and resume it later. With this approach React just keeps iterating until it
-processed all components and the stack is empty.
+递归方法直观，非常适合遍历树。但是正如我们发现的，它有局限性。最大的一点就是我们无法分解工作为增量单元。我们不能暂停特定组件的工作并在稍后恢复。通过这种方法，React只能不断迭代直到它处理完所有组件，并且堆栈为空。
 
-**So how does React implement the algorithm to walk the tree without recursion?
-It uses a singly linked list tree traversal algorithm. It makes it possible to
-pause the traversal and stop the stack from growing.**
+**那么React如何实现算法在没有递归的情况下遍历树？它使用单链表树遍历算法。它使暂停遍历并阻止堆栈增长成为可能。**
 
-### Linked list traversal
+### 链表遍历
 
-I was lucky to find the gist of the algorithm outlined by Sebastian Markbåge
-[here](https://github.com/facebook/react/issues/7942#issue-182373497). To
-implement the algorithm, we need to have a data structure with 3 fields:
+我很幸运能找到SebastianMarkbåge在[这里](https://github.com/facebook/react/issues/7942#issue-182373497)概述的算法要点。
+要实现该算法，我们需要一个包含3个字段的数据结构：
 
-* child — reference to the first child
-* sibling — reference to the first sibling
-* return — reference to the parent
+* child — 第一个子节点的引用
+* sibling — 第一个兄弟节点的引用
+* return — 父节点的引用
 
-In the context of the new reconciliation algorithm in React, the data structure
-with these fields is called Fiber. Under the hood it’s the representation of a
-React Element that keeps a queue of work to do. More on that in my next
-articles.
+在React新的协调算法的上下文中，包含这些字段的数据结构称为Fiber。在底层它是一个代表保持工作队列的React Element。更多内容见我的下一篇文章。
 
-The following diagram demonstrates the hierarchy of objects linked through the
-linked list and the types of connections between them:
+下图展示了通过链表链接的对象的层级结构和它们之间的连接类型：
 
-![](https://cdn-images-1.medium.com/max/1600/1*7dsyUaUpKbFG7EoNR9Cu2w.png)
+![](https://img.alicdn.com/tfs/TB15MEayQvoK1RjSZPfXXXPKFXa-536-352.png)
 
-So let’s first define our custom node constructor:
+我们首先定义我们的自定义节点的构造函数：
 
 ```js
 class Node {
@@ -299,8 +194,7 @@ class Node {
 }
 ```
 
-And the function that takes an array of nodes and links them together. We’re
-going to use it to link children returned by the `render` method:
+以及获取节点数组并将它们链接在一起的函数。我们将它用于链接`render`方法返回的子节点：
 
 ```js
 function link(parent, elements) {
@@ -317,23 +211,20 @@ function link(parent, elements) {
 }
 ```
 
-The function iterates over the array of nodes starting from the last one and
-links them together in a singly linked list. It returns the reference to the
-first sibling in the list. Here is a simple demo of how it works:
+该函数从最后一个节点开始往前遍历节点数组，将它们链接在一个单独的链表中。它返回第一个兄弟节点的引用。
+这是一个如何工作的简单演示：
 
 ```js
 const children = [{name: 'b1'}, {name: 'b2'}];
 const parent = new Node({name: 'a1'});
 const child = link(parent, children);
 
-// the following two statements are true
+// 下面两行代码的执行结果为true
 console.log(child.instance.name === 'b1');
 console.log(child.sibling.instance === children[1]);
 ```
 
-We’ll also implement a helper function that performs some work for a node. In
-our case, it’s going to log the name of a component. But besides that it also
-retrieves the children of a component and links them together:
+我们还将实现一个辅助函数，为节点执行一些工作。在我们的情况是，它将打印组件的名字。但除此之外，它也获取组件的`children`并将它们链接在一起：
 
 ```js
 function doWork(node) {
@@ -343,8 +234,7 @@ function doWork(node) {
 }
 ```
 
-Okay, now we’re ready to implement the main traversal algorithm. It’s a parent
-first, depth-first implementation. Here is the code with useful comments:
+好的，现在我们已经准备好实现主要遍历算法了。这是父节点优先，深度优先的实现。这是包含有用注释的代码：
 
 ```js
 function walk(o) {
@@ -352,65 +242,55 @@ function walk(o) {
     let current = o;
 
     while (true) {
-        // perform work for a node, retrieve & link the children
+        // 为节点执行工作，获取并连接它的children
         let child = doWork(current);
 
-        // if there's a child, set it as the current active node
+        // 如果child不为空, 将它设置为当前活跃节点
         if (child) {
             current = child;
             continue;
         }
 
-        // if we've returned to the top, exit the function
+        // 如果我们回到了根节点，退出函数
         if (current === root) {
             return;
         }
 
-        // keep going up until we find the sibling
+        // 遍历直到我们发现兄弟节点
         while (!current.sibling) {
 
-            // if we've returned to the top, exit the function
+            // 如果我们回到了根节点，退出函数
             if (!current.return || current.return === root) {
                 return;
             }
 
-            // set the parent as the current active node
+            // 设置父节点为当前活跃节点
             current = current.return;
         }
 
-        // if found, set the sibling as the current active node
+        // 如果发现兄弟节点，设置兄弟节点为当前活跃节点
         current = current.sibling;
     }
 }
 ```
 
-Although the implementation is not particularly difficult to understand, you may
-need to play with it a little to grok it. [Do it
-here](https://stackblitz.com/edit/js-tle1wr). The idea is that we keep the
-reference to the current node and re-assign it while descending the tree until
-we hit the end of the branch. Then we use the `return` pointer to return to the
-common parent.
+虽然代码实现并不是特别难以理解，但您可能需要稍微运行一下代码才能理解它。[在这里做](https://stackblitz.com/edit/js-tle1wr)。
+思路是保持对当前节点的引用，并在向下遍历树时重新给它赋值，直到我们到达分支的末尾。然后我们使用`return`指针返回根节点。
 
-If we now check the call stack with this implementation, here’s what we’re going
-to see:
+如果我们现在检查这个实现的调用堆栈，下图是我们将会看到的：
 
-![](https://cdn-images-1.medium.com/max/1600/1*ybVgRoNf-dBxR_OKxn4oKQ.gif)
+![](https://img.alicdn.com/tfs/TB1lv3byHrpK1RjSZTEXXcWAVXa-436-292.gif)
 
-As you can see, the stack doesn’t grow as we walk down the tree. But if now put
-the debugger into the `doWork` function and log node names, we’re going to see
-the following:
+正如您所看到的，当我们向下遍历树时，堆栈不会增长。但如果现在放调试器到`doWork`函数并打印节点名称，我们将看到下图：
 
-![](https://cdn-images-1.medium.com/max/1600/1*ErzqXpJt5KkLKxHCn31hmA.gif)
+![](https://img.alicdn.com/tfs/TB1e3oXyFYqK1RjSZLeXXbXppXa-320-240.gif)
 
-**It looks like a callstack in a browser.** So with this algorithm, we’re
-effectively replacing the browser’s implementation of the call stack with our
-own implementation. That’s what Andrew describes here:
 
-> Fiber is re-implementation of the stack, specialized for React components. You
-> can think of a single fiber as a virtual stack frame.
+**它看起来像浏览器中的一个调用堆栈。**所以使用这个算法，我们就是用我们的实现有效地替换浏览器的调用堆栈的实现。这就是Andrew在这里所描述的：
 
-Since we’re now controlling the stack by keeping the reference to the node that
-acts as a top frame:
+> Fiber是堆栈的重新实现，专门用于React组件。您可以将单个Fiber视为一个虚拟堆栈帧。
+
+因此我们现在通过保持对充当顶部堆栈帧的节点的引用来控制堆栈：
 
 ```js
 function walk(o) {
@@ -422,7 +302,7 @@ function walk(o) {
 
             current = child;
             ...
-            
+
             current = current.return;
             ...
 
@@ -431,15 +311,11 @@ function walk(o) {
 }
 ```
 
-we can stop the traversal at any time and resume to it later. That’s exactly the
-condition we wanted to achieve to be able to use the new `requestIdleCallback`
-API.
+我们可以随时停止遍历并稍后恢复。这正是我们想要实现的能够使用新的`requestIdleCallback` API的情况。
 
-### Work loop in React
+### React中的工作循环
 
-[Here’s the
-code](https://github.com/facebook/react/blob/95a313ec0b957f71798a69d8e83408f40e76765b/packages/react-reconciler/src/ReactFiberScheduler.js#L1118)
-that implements work loop in React:
+这是在React中实现工作循环的[代码](https://github.com/facebook/react/blob/95a313ec0b957f71798a69d8e83408f40e76765b/packages/react-reconciler/src/ReactFiberScheduler.js#L1118)：
 
 ```js
 function workLoop(isYieldy) {
@@ -457,35 +333,26 @@ function workLoop(isYieldy) {
 }
 ```
 
-As you can see, it maps nicely to the algorithm I presented above. It keeps the
-reference to the current fiber node in the `nextUnitOfWork` variable that acts
-as a top frame.
+如您所见，它很好地映射到我上面提到的算法。`nextUnitOfWork`变量作为顶部帧，保留对当前Fiber节点的引用。
 
-The algorithm can walk the components tree **synchronously **and perform the
-work for each fiber node in the tree (nextUnitOfWork). This is usually the case
-for so-called interactive updates caused by UI events (click, input etc). Or it
-can walk the components tree **asynchronously **checking if there’s time left
-after performing work for a Fiber node. The function `shouldYield` returns the
-result based on
-[deadlineDidExpire](https://github.com/facebook/react/blob/95a313ec0b957f71798a69d8e83408f40e76765b/packages/react-reconciler/src/ReactFiberScheduler.js#L1806)
-and
-[deadline](https://github.com/facebook/react/blob/95a313ec0b957f71798a69d8e83408f40e76765b/packages/react-reconciler/src/ReactFiberScheduler.js#L1809)
-variables that are constantly updated as React performs work for a fiber node.
+该算法可以**同步地**遍历组件树，并为树中的每个Fiber点执行工作（nextUnitOfWork）。
+这通常是由UI事件（点击，输入等）引起的所谓交互式更新的情况。或者它可以**异步地**遍历组件树，检查在执行Fiber节点工作后是否还剩下时间。
+函数`shouldYield`返回基于[deadlineDidExpire](https://github.com/facebook/react/blob/95a313ec0b957f71798a69d8e83408f40e76765b/packages/react-reconciler/src/ReactFiberScheduler.js#L1806)和[deadline](https://github.com/facebook/react/blob/95a313ec0b957f71798a69d8e83408f40e76765b/packages/react-reconciler/src/ReactFiberScheduler.js#L1809)变量的结果，这些变量在React为Fiber节点执行工作时不停的更新。
 
-The `peformUnitOfWork` function is described in depth
-[here](https://medium.com/react-in-depth/inside-fiber-in-depth-overview-of-the-new-reconciliation-algorithm-in-react-e1c04700ef6e#1a7d).
+
+[这里](https://medium.com/react-in-depth/inside-fiber-in-depth-overview-of-the-new-reconciliation-algorithm-in-react-e1c04700ef6e#1a7d)深入介绍了`peformUnitOfWork`函数。
 
 *****
 
-#### I’m working on the series of in-depth articles that explore the implementation details of Fiber change detection algorithm in React.
+#### 我正在写一系列深入探讨React中Fiber变化检测算法实现细节的文章。
 
-### Stay tuned and follow me on [Twitter](https://twitter.com/maxim_koretskyi) and on [Medium](https://medium.com/@maxim.koretskyi), I’ll tweet as soon as it’s ready.
+### 请继续在[Twitter](https://twitter.com/maxim_koretskyi)和[Medium](https://medium.com/@maxim.koretskyi)上关注我，我会在文章准备好后立即发tweet。
 
-#### Thanks for reading! If you liked this article, hit that clap button below 👏. It means a lot to me and it helps other people see the story.
+谢谢阅读！如果您喜欢这篇文章，请点击下面的点赞按钮👏。这对我来说意义重大，并且可以帮助其他人看到这篇文章。
 
-[<img src="https://cdn-images-1.medium.com/max/1600/1*AqX3Hf4h2icjt8WkIuzv6A.png">](https://react-grid.ag-grid.com/?utm_source=medium&utm_medium=banner&utm_campaign=reactcustom)
+[<img src="https://img.alicdn.com/tfs/TB1j1shyIfpK1RjSZFOXXa6nFXa-500-257.png">](https://react-grid.ag-grid.com/?utm_source=medium&utm_medium=banner&utm_campaign=reactcustom)
 
-<span class="figcaption_hack">React Grid — the fastest and most feature-rich grid component from ag-Grid</span>
+<span class="figcaption_hack">React Grid  - 来自ag-Grid的最快且功能最丰富的网格组件</span>
 
 ---
 
