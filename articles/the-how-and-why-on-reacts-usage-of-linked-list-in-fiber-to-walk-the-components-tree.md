@@ -4,7 +4,6 @@
 > * 译文链接：[https://github.com/dawn-teams/translate/blob/master/articles/.md](https://github.com/dawn-teams/translate/blob/master/articles/.md)
 > * 译者：[照天](https://github.com/zzwzzhao)
 > * 校对者：[也树](https://github.com/xdlrt)，[靖鑫](https://github.com/luckyjing)
-
 <!-- 正文 -->
 # 如何以及为什么React Fiber使用链表遍历组件树
 ### React调度器中工作循环的主要算法
@@ -15,10 +14,10 @@
 
 ![](https://img.alicdn.com/tfs/TB1frMdyNTpK1RjSZFMXXbG_VXa-743-2.png)
 
-为了教育我自己和社区，我花了很多时间在[Web技术逆向工程](https://blog.angularindepth.com/practical-application-of-reverse-engineering-guidelines-and-principles-784c004bb657)和写我的发现。在过去的一年里，我主要专注在Angular的源码，发布了网路上最大的Angular出版物—[Angular-In-Depth](https://blog.angularindepth.com/)。**现在我已经把主要精力投入到React中**。[变化检测](https://medium.freecodecamp.org/what-every-front-end-developer-should-know-about-change-detection-in-angular-and-react-508f83f58c6a)已经成为我在Angular的专长的主要领域，只要有一定的耐心和*大量的调试*，我希望能很快在React中达到这个水平。
+为了教育我自己和社区，我花了很多时间在[Web技术逆向工程](https://blog.angularindepth.com/practical-application-of-reverse-engineering-guidelines-and-principles-784c004bb657)和写我的发现。在过去的一年里，我主要专注在Angular的源码，发布了网路上最大的Angular出版物—[Angular-In-Depth](https://blog.angularindepth.com/)。**现在我已经把主要精力投入到React中**。[变化检测](https://medium.freecodecamp.org/what-every-front-end-developer-should-know-about-change-detection-in-angular-and-react-508f83f58c6a)已经成为我在Angular的专长的主要领域，通过一定的耐心和大量的调试验证，我希望能很快在React中达到这个水平。
 在React中, 变化检测机制通常称为 "协调" 或 "渲染"，而Fiber是其最新实现。归功于它的底层架构，它提供能力去实现许多有趣的特性，比如执行非阻塞渲染，根据优先级执行更新，在后台预渲染内容等。这些特性在[并发React哲学](https://twitter.com/acdlite/status/1056612147432574976)中被称为**时间分片**。
 
-除了解决应用程序开发者的实际问题之外，**这些机制的内部实现从工程角度来看也具有广泛的吸引力。源码中有如此丰富的知识可以帮助我们成长为更好地开发者。**
+除了解决应用程序开发者的实际问题之外，**这些机制的内部实现从工程角度来看也具有广泛的吸引力。源码中有如此丰富的知识可以帮助我们成长为更好的开发者。**
 
 如果你今天谷歌“React Fiber”，你会在搜索结果中看到很多文章。但是除了[Andrew Clark的笔记](https://github.com/acdlite/react-fiber-architecture)，所有文章都是相当高层次的解释。在本文中，我将参考Andrew Clark的笔记，**对Fiber中一些特别重要的概念进行详细说明**。一旦我们完成，你将有足够的知识来理解[Lin Clark在ReactConf 2017上的一次非常精彩的演讲](https://www.youtube.com/watch?v=ZCuYPiUIONs)中的工作循环配图。*这是你需要去看的一次演讲*。但是，在你花了一点时间阅读本文之后，它对你来说会更有意义。
 
