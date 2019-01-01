@@ -9,8 +9,7 @@
 ### React调度器中工作循环的主要算法
 
 ![](https://img.alicdn.com/tfs/TB1FuUbyMHqK1RjSZFPXXcwapXa-984-432.png)
-<p class="figcaption_hack" style="text-align: center;">工作循环配图，来自Lin Clark
-在ReactConf 2017精彩的[演讲](https://www.youtube.com/watch?v=ZCuYPiUIONs)</p>
+工作循环配图，来自Lin Clark在ReactConf 2017精彩的[演讲](https://www.youtube.com/watch?v=ZCuYPiUIONs)
 
 ![](https://img.alicdn.com/tfs/TB1frMdyNTpK1RjSZFMXXbG_VXa-743-2.png)
 
@@ -19,12 +18,12 @@
 
 除了解决应用程序开发者的实际问题之外，**这些机制的内部实现从工程角度来看也具有广泛的吸引力。源码中有如此丰富的知识可以帮助我们成长为更好的开发者。**
 
-如果你今天谷歌“React Fiber”，你会在搜索结果中看到很多文章。但是除了[Andrew Clark的笔记](https://github.com/acdlite/react-fiber-architecture)，所有文章都是相当高层次的解释。在本文中，我将参考Andrew Clark的笔记，**对Fiber中一些特别重要的概念进行详细说明**。一旦我们完成，你将有足够的知识来理解[Lin Clark在ReactConf 2017上的一次非常精彩的演讲](https://www.youtube.com/watch?v=ZCuYPiUIONs)中的工作循环配图。*这是你需要去看的一次演讲*。但是，在你花了一点时间阅读本文之后，它对你来说会更有意义。
+如果你今天谷歌搜索“React Fiber”，你会在搜索结果中看到很多文章。但是除了[Andrew Clark的笔记](https://github.com/acdlite/react-fiber-architecture)，所有文章都是相当高层次的解读。在本文中，我将参考Andrew Clark的笔记，**对Fiber中一些特别重要的概念进行详细说明**。一旦我们完成，你将有足够的知识来理解[Lin Clark在ReactConf 2017上的一次非常精彩的演讲](https://www.youtube.com/watch?v=ZCuYPiUIONs)中的工作循环配图。*这是你需要去看的一次演讲*。但是，在你花了一点时间阅读本文之后，它对你来说会更容易理解。
 
-[这篇文章开启了一个React Fiber内部实现的系列文章。](https://medium.com/react-in-depth/inside-fiber-in-depth-overview-of-the-new-reconciliation-algorithm-in-react-e1c04700ef6e)通过了解大约70%实现的内部细节，还有三篇关于协调和渲染机制的文章。
+[这篇文章开启了一个React Fiber内部实现的系列文章。](https://medium.com/react-in-depth/inside-fiber-in-depth-overview-of-the-new-reconciliation-algorithm-in-react-e1c04700ef6e)我大约有70%是通过内部实现了解的，此外还看了三篇关于协调和渲染机制的文章。
 
-> 我在[ag-Grid](https://react-grid.ag-grid.com/?utm_source=medium&utm_medium=blog&utm_campaign=reactcustom)担任开发人员。如果您想了解数据表格或寻找终极的React数据表格解决方案，请查看这篇指南 “[在5分钟内开始使用React网格](http://blog.ag-grid.com/index.php/2018/08/07/get-started-with-react-grid-in-5-minutes/?utm_source=medium&utm_medium=blog&utm_campaign=getstartedreact)”尝试一下。
-我很乐意回答您的任何问题。[请关注我！](https://twitter.com/maxim_koretskyi)
+> 我在[ag-Grid](https://react-grid.ag-grid.com/?utm_source=medium&utm_medium=blog&utm_campaign=reactcustom)担任开发人员。如果你想了解数据表格或寻找终极的React数据表格解决方案，请查看这篇指南 “[在5分钟内开始使用React网格](http://blog.ag-grid.com/index.php/2018/08/07/get-started-with-react-grid-in-5-minutes/?utm_source=medium&utm_medium=blog&utm_campaign=getstartedreact)”尝试一下。
+我很乐意回答你的任何问题。[请关注我！](https://twitter.com/maxim_koretskyi)
 
 让我们开始吧!
 
@@ -42,18 +41,18 @@ Fiber的架构有两个主要阶段：协调/渲染和提交。在源码中，�
 
 **所有这些活动都被称为Fiber内部的工作。** 需要完成的工作类型取决于React Element的类型。 例如，对于
 `Class Component` React需要实例化一个类，然而对于`Functional Component`却不需要。如果有兴趣，[在这里](https://github.com/facebook/react/blob/340bfd9393e8173adca5380e6587e1ea1a23cefa/packages/shared/ReactWorkTags.js#L29-L28)
-您可以看到Fiber中的所有类型的工作目标。 这些活动正是Andrew在这里谈到的：
+你可以看到Fiber中的所有类型的工作目标。 这些活动正是Andrew在这里谈到的：
 
 > 在处理UI时，问题是如果**一次执行太多工作**，可能会导致动画丢帧...
 
-具体什么是*一次太多*？好吧，基本上，如果React要**同步**遍历整个组件树并为每个组件执行工作，它可能会运行超过16毫秒，以便应用程序代码执行其逻辑。这将导致帧丢失，导致不顺畅的视觉效果。
+具体什么是*一次执行太多*？好吧，基本上，如果React要**同步**遍历整个组件树并为每个组件执行任务，它可能会运行超过16毫秒，以便应用程序代码执行其逻辑。这将导致帧丢失，导致不顺畅的视觉效果。
 
 那么有好的办法吗?
 
 > 较新的浏览器（和React Native）实现了有助于解决这个问题的API ...
 
 他提到的新API是[requestIdleCallback](https://developers.google.com/web/updates/2015/08/using-requestidlecallback)
-全局函数，可用于对函数进行排队，这些函数会在浏览器空闲时被调用。以下是您将如何使用它:
+全局函数，可用于对函数进行排队，这些函数会在浏览器空闲时被调用。以下是你将如何使用它:
 
 ```js
 requestIdleCallback((deadline)=>{
@@ -67,7 +66,7 @@ requestIdleCallback((deadline)=>{
 
 > `requestIdleCallback` 实际上有点过于严格，并且[执行频次不足](https://github.com/facebook/react/issues/13206#issuecomment-418923831)以实现流畅的UI渲染，因此React团队[必须实现自己的版本](https://github.com/facebook/react/blob/eeb817785c771362416fd87ea7d2a1a32dde9842/packages/scheduler/src/Scheduler.js#L212-L222)。
 
-现在，如果我们将Reacts对组件执行的所有活动放入函数`performWork`, 并使用`requestIdleCallback`来安排工作，我们的代码可能如下所示：
+现在，如果我们将React对组件执行的所有活动放入函数`performWork`, 并使用`requestIdleCallback`来安排工作，我们的代码可能如下所示：
 
 ```js
 requestIdleCallback((deadline) => {
@@ -78,23 +77,23 @@ requestIdleCallback((deadline) => {
 });
 ```
 
-我们对一个组件执行工作，然后返回要处理的下一个组件的引用。如果不是因为一件事，这将有效。您不能同步地处理整个组件树，如[前面的协调算法实现](https://reactjs.org/docs/codebase-overview.html#stack-reconciler)中所示。
+我们对一个组件执行工作，然后返回要处理的下一个组件的引用。如果不是因为如[前面的协调算法实现](https://reactjs.org/docs/codebase-overview.html#stack-reconciler)中所示，你不能同步地处理整个组件树，这将有效。
 这就是Andrew在这里谈到的问题：
 
-> 为了使用这些API，您需要一种方法将渲染工作分解为增量单元
+> 为了使用这些API，你需要一种方法将渲染工作分解为增量单元
 
 因此，为了解决这个问题，React必须重新实现遍历树的算法，**从依赖于内置堆栈的同步递归模型，变为具有链表和指针的异步模型**。这就是Andrew在这里写的：
 
 > 如果你只依赖于[内置]调用堆栈，它将继续工作直到堆栈为空。。。
-> 如果我们可以随意中断调用堆栈并手动操作堆栈帧，那不是很好吗？这就是React Fiber的目的。 **Fiber是堆栈的重新实现，专门用于React组件**。 您可以将单个Fiber视为一个虚拟堆栈帧。
+> 如果我们可以随意中断调用堆栈并手动操作堆栈帧，那不是很好吗？这就是React Fiber的目的。 **Fiber是堆栈的重新实现，专门用于React组件**。 你可以将单个Fiber视为一个虚拟堆栈帧。
 
 这就是我现在将要讲解的内容。
 
 ![](https://img.alicdn.com/tfs/TB1frMdyNTpK1RjSZFMXXbG_VXa-743-2.png)
 
-#### 关于堆栈的一个词
+#### 关于堆栈想说的
 
-我假设你们都熟悉调用堆栈的概念。如果您在断点处暂停代码，则可以在浏览器的调试工具中看到这一点。以下是[维基百科](https://en.wikipedia.org/wiki/Call_stack?fbclid=IwAR06VWEQnwoEawg0NsoR8loBJwIbmPWsXXKqbAuOFBjkawHThK7zlIBsJ_U#Structure)的一些相关引用和图表：
+我假设你们都熟悉调用堆栈的概念。如果你在断点处暂停代码，则可以在浏览器的调试工具中看到这一点。以下是[维基百科](https://en.wikipedia.org/wiki/Call_stack?fbclid=IwAR06VWEQnwoEawg0NsoR8loBJwIbmPWsXXKqbAuOFBjkawHThK7zlIBsJ_U#Structure)的一些相关引用和图表：
 
 > 在计算机科学中，**调用堆栈**是一种堆栈数据结构，它存储有关计算机程序的活跃子程序的信息...调用堆栈存在的主要原因是跟踪每个活跃子程序在完成执行时应该返回控制的位置...调用堆栈由堆栈帧组成...每个堆栈帧对应于一个尚未返回终止的子例程的调用。例如，如果由子程序`DrawSquare`调用的一个名为`DrawLine`的子程序当前正在运行，则调用堆栈的顶部可能会像在下面的图片中一样。
 
@@ -103,7 +102,7 @@ requestIdleCallback((deadline) => {
 
 #### 为什么堆栈与React相关？
 
-正如我们在本文的第一部分中所定义的，Reacts在协调/渲染阶段遍历组件树，并为组件执行一些工作。协调器的先前实现使用依赖于内置堆栈的同步递归模型来遍历树。[关于协调的官方文档](https://reactjs.org/docs/reconciliation.html#recursing-on-children)描述了这个过程，并谈了很多关于递归的内容：
+正如我们在本文的第一部分中所定义的，React在协调/渲染阶段遍历组件树，并为组件执行一些工作。协调器的先前实现使用依赖于内置堆栈的同步递归模型来遍历树。[关于协调的官方文档](https://reactjs.org/docs/reconciliation.html#recursing-on-children)描述了这个过程，并谈了很多关于递归的内容：
 
 > 默认情况下，当对DOM节点的子节点进行递归时，React会同时迭代两个子节点列表，并在出现差异时生成突变。
 
@@ -159,7 +158,7 @@ function doWork(o) {
 `a1, b1, b2, c1, d1, d2, b3, c2
 `
 
-如果您对递归没有信心，请查看[我关于递归的深入文章](https://medium.freecodecamp.org/learn-recursion-in-10-minutes-e3262ac08a1)。
+如果你对递归没有信心，请查看[我关于递归的深入文章](https://medium.freecodecamp.org/learn-recursion-in-10-minutes-e3262ac08a1)。
 
 递归方法直观，非常适合遍历树。但是正如我们发现的，它有局限性。最大的一点就是我们无法分解工作为增量单元。我们不能暂停特定组件的工作并在稍后恢复。通过这种方法，React只能不断迭代直到它处理完所有组件，并且堆栈为空。
 
@@ -273,21 +272,21 @@ function walk(o) {
 }
 ```
 
-虽然代码实现并不是特别难以理解，但您可能需要稍微运行一下代码才能理解它。[在这里做](https://stackblitz.com/edit/js-tle1wr)。
+虽然代码实现并不是特别难以理解，但你可能需要稍微运行一下代码才能理解它。[在这里做](https://stackblitz.com/edit/js-tle1wr)。
 思路是保持对当前节点的引用，并在向下遍历树时重新给它赋值，直到我们到达分支的末尾。然后我们使用`return`指针返回根节点。
 
 如果我们现在检查这个实现的调用堆栈，下图是我们将会看到的：
 
 ![](https://img.alicdn.com/tfs/TB1lv3byHrpK1RjSZTEXXcWAVXa-436-292.gif)
 
-正如您所看到的，当我们向下遍历树时，堆栈不会增长。但如果现在放调试器到`doWork`函数并打印节点名称，我们将看到下图：
+正如你所看到的，当我们向下遍历树时，堆栈不会增长。但如果现在放调试器到`doWork`函数并打印节点名称，我们将看到下图：
 
 ![](https://img.alicdn.com/tfs/TB1e3oXyFYqK1RjSZLeXXbXppXa-320-240.gif)
 
 
 **它看起来像浏览器中的一个调用堆栈。**所以使用这个算法，我们就是用我们的实现有效地替换浏览器的调用堆栈的实现。这就是Andrew在这里所描述的：
 
-> Fiber是堆栈的重新实现，专门用于React组件。您可以将单个Fiber视为一个虚拟堆栈帧。
+> Fiber是堆栈的重新实现，专门用于React组件。你可以将单个Fiber视为一个虚拟堆栈帧。
 
 因此我们现在通过保持对充当顶部堆栈帧的节点的引用来控制堆栈：
 
@@ -332,7 +331,7 @@ function workLoop(isYieldy) {
 }
 ```
 
-如您所见，它很好地映射到我上面提到的算法。`nextUnitOfWork`变量作为顶部帧，保留对当前Fiber节点的引用。
+如你所见，它很好地映射到我上面提到的算法。`nextUnitOfWork`变量作为顶部帧，保留对当前Fiber节点的引用。
 
 该算法可以**同步地**遍历组件树，并为树中的每个Fiber点执行工作（nextUnitOfWork）。
 这通常是由UI事件（点击，输入等）引起的所谓交互式更新的情况。或者它可以**异步地**遍历组件树，检查在执行Fiber节点工作后是否还剩下时间。
@@ -347,11 +346,11 @@ function workLoop(isYieldy) {
 
 ### 请继续在[Twitter](https://twitter.com/maxim_koretskyi)和[Medium](https://medium.com/@maxim.koretskyi)上关注我，我会在文章准备好后立即发tweet。
 
-谢谢阅读！如果您喜欢这篇文章，请点击下面的点赞按钮👏。这对我来说意义重大，并且可以帮助其他人看到这篇文章。
+谢谢阅读！如果你喜欢这篇文章，请点击下面的点赞按钮👏。这对我来说意义重大，并且可以帮助其他人看到这篇文章。
 
 [<img src="https://img.alicdn.com/tfs/TB1j1shyIfpK1RjSZFOXXa6nFXa-500-257.png">](https://react-grid.ag-grid.com/?utm_source=medium&utm_medium=banner&utm_campaign=reactcustom)
 
-<span class="figcaption_hack">React Grid  - 来自ag-Grid的最快且功能最丰富的网格组件</span>
+React Grid  - 来自ag-Grid的最快且功能最丰富的网格组件
 
 ---
 
