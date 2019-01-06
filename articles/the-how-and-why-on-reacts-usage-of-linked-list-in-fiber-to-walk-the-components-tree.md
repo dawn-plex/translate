@@ -1,9 +1,9 @@
-> * 原文地址：[]()
-> * 原文作者：[]()
+> * 原文地址：[The how and why on React’s usage of linked list in Fiber to walk the component’s tree](https://medium.com/dailyjs/the-how-and-why-on-reacts-usage-of-linked-list-in-fiber-67f1014d0eb7)
+> * 原文作者：[Max Koretskyi](https://medium.com/@maxim.koretskyi)
 > * 译文出自：[阿里云翻译小组](https://github.com/dawn-teams/translate)
 > * 译文链接：[https://github.com/dawn-teams/translate/blob/master/articles/.md](https://github.com/dawn-teams/translate/blob/master/articles/.md)
 > * 译者：[照天](https://github.com/zzwzzhao)
-> * 校对者：[也树](https://github.com/xdlrt)，[靖鑫](https://github.com/luckyjing)
+> * 校对者：[也树](https://github.com/xdlrt)，[眠云](https://github.com/JeromeYangtao)
 <!-- 正文 -->
 # 如何以及为什么React Fiber使用链表遍历组件树
 ### React调度器中工作循环的主要算法
@@ -11,7 +11,7 @@
 ![](https://img.alicdn.com/tfs/TB1FuUbyMHqK1RjSZFPXXcwapXa-984-432.png)
 工作循环配图，来自Lin Clark在ReactConf 2017精彩的[演讲](https://www.youtube.com/watch?v=ZCuYPiUIONs)
 
-![](https://img.alicdn.com/tfs/TB1frMdyNTpK1RjSZFMXXbG_VXa-743-2.png)
+<!-- ![](https://img.alicdn.com/tfs/TB1frMdyNTpK1RjSZFMXXbG_VXa-743-2.png) -->
 
 为了教育我自己和社区，我花了很多时间在[Web技术逆向工程](https://blog.angularindepth.com/practical-application-of-reverse-engineering-guidelines-and-principles-784c004bb657)和写我的发现。在过去的一年里，我主要专注在Angular的源码，发布了网路上最大的Angular出版物—[Angular-In-Depth](https://blog.angularindepth.com/)。**现在我已经把主要精力投入到React中**。[变化检测](https://medium.freecodecamp.org/what-every-front-end-developer-should-know-about-change-detection-in-angular-and-react-508f83f58c6a)已经成为我在Angular的专长的主要领域，通过一定的耐心和大量的调试验证，我希望能很快在React中达到这个水平。
 在React中, 变化检测机制通常称为 "协调" 或 "渲染"，而Fiber是其最新实现。归功于它的底层架构，它提供能力去实现许多有趣的特性，比如执行非阻塞渲染，根据优先级执行更新，在后台预渲染内容等。这些特性在[并发React哲学](https://twitter.com/acdlite/status/1056612147432574976)中被称为**时间分片**。
@@ -27,7 +27,7 @@
 
 让我们开始吧!
 
-![](https://img.alicdn.com/tfs/TB1frMdyNTpK1RjSZFMXXbG_VXa-743-2.png)
+<!-- ![](https://img.alicdn.com/tfs/TB1frMdyNTpK1RjSZFMXXbG_VXa-743-2.png) -->
 
 ### 基础
 
@@ -89,7 +89,7 @@ requestIdleCallback((deadline) => {
 
 这就是我现在将要讲解的内容。
 
-![](https://img.alicdn.com/tfs/TB1frMdyNTpK1RjSZFMXXbG_VXa-743-2.png)
+<!-- ![](https://img.alicdn.com/tfs/TB1frMdyNTpK1RjSZFMXXbG_VXa-743-2.png) -->
 
 #### 关于堆栈想说的
 
@@ -351,7 +351,3 @@ function workLoop(isYieldy) {
 [<img src="https://img.alicdn.com/tfs/TB1j1shyIfpK1RjSZFOXXa6nFXa-500-257.png">](https://react-grid.ag-grid.com/?utm_source=medium&utm_medium=banner&utm_campaign=reactcustom)
 
 React Grid  - 来自ag-Grid的最快且功能最丰富的网格组件
-
----
-
-阿里云翻译小组
