@@ -572,7 +572,7 @@ new DoorAdapter().openDoor(metalDoor)
 
 我们在这里关注的分离，是相关行为的分离。每个 Door 模型不知道也不关心一个具体锁定/打开策略的实现，这个问题由另一个实体来关注。我们按照策略模式的要求面向接口编程，因为这使得在运行期间切换策略变得很容易。
 
-这可能不会持续很久，但是这是一种更好的策略模式。
+这可能不会持续很久，但是这是一种经由策略模式提供的更好的方式。
 
 一扇门也许会有很多锁定/打开策略，并且可能会在锁定和打开运行期间使用到一个或多个策略。无论如何，你一定要在脑海中记住策略模式。
 
@@ -581,7 +581,7 @@ new DoorAdapter().openDoor(metalDoor)
 
 让我们用我们的第一个示例来示范如何在 JavaScript 中应用策略模式。
 
-`SortingProgram` 类将 `SortingStrategy ` 作为参数传递给它的 `runSort` 方法，并且调用了 `sort` 方法。
+第一个示例是基于排序算法的。现在，`SortingStrategy` 接口有一个 `sort` 方法，所有实现的策略都必须定义。SortingProgram` 类将 `SortingStrategy ` 作为参数传递给它的 `runSort` 方法，并且调用了 `sort` 方法。
 
 我们对排序算法进行建模：
 
