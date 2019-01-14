@@ -45,7 +45,7 @@ OOP 为我们提供了这样做的设计，但是正如我之前所说，我们�
 
 仅举几例。
 
-然后，在我们的计划中，我们在执行期间同时需要几种不同的排序算法。
+然后，在我们的计划中，我们在执行期间同时需要几种不同的排序算法。使用策略模式允许我们队这些算法进行分组，并且在需要的时候可以从算法池中进行选择。
 
 这更像一个插件，比如 Windows 中的 PlugnPlay 或者设备驱动程序。所有插件都必须遵循一种签名或规则。
 
@@ -127,7 +127,7 @@ sortProgram.runSort(new LinearSearch())
 
 ![](https://img.alicdn.com/tfs/TB1d9NVA3TqK1RjSZPhXXXfOFXa-1287-656.png)
 
-在上面的 UML 类图中，`Concrete` 类依赖于抽象，`Strategy` 接口。它没有直接实现算法。`Context` 从 `runStrategy` 方法中调用了 `Strategy` 传递来的 `doAlgorithm`。
+在上面的 UML 类图中，`Concrete` 类依赖于抽象，`Strategy` 接口。它没有直接实现算法。`Context` 从 `runStrategy` 方法中调用了 `Strategy` 传递来的 `doAlgorithm`。`Context` 类独立于 `doAlgorithm` 方法，它不知道也没必要知道 `doAlgorithm` 是如何实现的。根据 `Design by Contract`，实现 `Strategy` 接口的类必须实现 `doAlgorithm` 方法。
 
 在策略设计模式中，这里有三个实体：Context、Strategy 和 ConcreteStrategy。
 
