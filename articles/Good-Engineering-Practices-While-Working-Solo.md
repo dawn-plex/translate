@@ -7,132 +7,124 @@
 
 ---
 
-# Good Engineering Practices while Working Solo
+# 当你独自研发时，你可以这么做
 
-When you’ve got to go it alone, how do you make the most out of it?
+当你独自研发（Working solo）时，你该如何充分发挥自己？
 
-Most developers work as part of a team. However, at some point in our careers, we’ve had to (or we’ll have to) work alone. And while much of product development involves being able to manage or work with the rest of the team, it’s equally as important to develop good practices while working solo.
+大部分开发者都在自己的团队里工作，不过有些时候，我们也会不得不独自研发，固然大量产品研发离不开团队的管理和协作，但是在个人研发时，遵循一些工程实践方法同样重要。
 
-## A quick note about “working solo”
+## 什么是 Working solo
 
-Solo typically means doing something alone. But we’re using it in this context to mean anything that’s done by a small number of people in an unofficial, unstructured environment. It could be just you, or you and a few other folks. Examples include:
+Solo 一般指独自做某件事，但是在本文里，它特指一个人或一个小组在非办公环境下进行项目研发，例如：
 
-* An open-source project, such as a package or library
-* A personal product, which could be commercial or free
-* A freelance gig for a client
+* 开源项目，例如一个 package 或 library
+* 个人项目，可以是收费或免费的
+* 自由职业者
 
-The common thread here is that there are no established rules like you’d typically have in a company.
+上述示例的共同点是：你在开发时，并不会受到像公司里那样的约束。
 
-## Why should I bother about my engineering practices
+## 为什么需要关注工程实践
 
-Here are a few reasons why they matter:
+原因之一是因为**你将会成为团队不可或缺的财富。**
 
-**You’ll be an asset to your team.**
+我们设想一下你加入一个团队时最初的场景：
 
-Let’s consider the possible scenarios that could ensue when you join a team:
+* 你所加入的团队遵循的实践规范和你之前的一致，那么你会很快融入这个团队。
+* 两者不一致情况下，如果你之前遵循了最佳实践，那么用不了多久你也会融入。
+* 最糟糕情况是，如果你所在团队没有遵循最佳实践，你可以推广你的经验来改善团队流程，要不然只能离开了。
 
-* You join a team that follows the practices you’re used to. Great! It means you’ll be ready to start contributing from day one.
-* You join a team that follows a different set of practices. If you’ve grasped the general concept of good engineering practices, it shouldn’t take you too long to get used to it, and you’ll become productive soon, too.
-* You join a team that doesn’t follow any good practices (oh no!). In this case, depending on the team, you might be able to bring your knowledge to bear and improve their processes. Otherwise…maybe just leave.
+不管怎么说，我们期望的还是双赢。
 
-Either way, it’s a win-win.
+另外一个原因是因为**你还会成为一名更优秀的开发者。**
 
-**You’ll be a better developer.**
+软件工程可不止编程，一个产品从概念到上线需要考虑很多事情，遵循最佳实践可以帮助你走上正轨，少一些挫折。如果你钟情编码，那么当你做一些新事情时，总会有一种诱惑让你跳过其他事情直接埋头编码。但是随着时间的推移，我发现，遵循一些最佳实践会让我们在享受独自工作带来的灵活性的时候，同时帮助我们规避掉一些障碍。
 
-Software engineering is about more than just coding. There are lots of moving parts involved in bringing a product from conception to launch, and then keeping it running beyond that. Inculcating best practices will help you keep on track and avoid frustration.
+现在，让我们考虑一下下文提到的一些最佳实践吧。
 
-If you love coding (like me), there’s always the temptation when working on something new to jump right in and start coding. But I’ve seen over time that having some kind of structure in place, while still maintaining the flexibility that comes with working solo, helps me to avoid many bumps in the road.
+## 遵循一个工作流程
 
-Let’s consider some of these good practices.
+一个工作流包含许多步骤，这些步骤包含在将想法转变为产品的过程中，下面是一些你的工作流中需要考虑的事情：
 
-## Stick to a workflow
+* 当决定要变更时，我改遵循什么流程来实现它？
+* 我该如何发布一个新版本给到使用者？
+* 我该如何追踪产品所做的修改？
+* 我该如何追踪Bug、问题以及未来的研发计划？
 
-A workflow is the series of steps that are involved in transforming an idea in your head to a finished product. Some of the things your workflow should cover are:
+为什么要做上述思考呢？不需要任何工作流（直接编写代码，然后推送到 master 分支）看起来是最快的方法，但是随着项目规模和复杂度的扩大，你会发现，有了清晰的定义，就可以更容易确定做什么和关注什么。当在团队中工作时，工作流会帮助每个成员更具生产力。
 
-* when a change is decided upon, what processes do I follow to implement it?
-* how do I deliver new versions of this product to the end user?
-* how do I track changes made to this product?
-* how do I track bugs, problems, and future plans for this product?
+**你可以这么做：**
 
-**Why?** It might seem faster to get things done without a defined workflow (“just write code and push to master”), but as a project increases in complexity, you’ll find that having clear definitions makes it easier to determine what needs to be done and to focus on it. When working on a team, the workflow becomes a pipeline that helps each member be more productive.
+* *使用 issues*（GitHub、Gitlab、BitBucket 或者你自己的代码托管平台）。Issues 可以帮助你追踪 Bug ，功能需求和重要变更。另外，编写 issue 标题和描述会强迫你细化头脑中的想法，定义好解决方案包含的内容，你可以使用诸如 Trello 和 Github 这样的团队管理工具来进一步实践它。
+* *使用 pull request* 。许多开发者自己工作的时候倾向于直接推送到 master 分支，然而，通过 pull request 来创建变更有许多好处，它可以很容易地看到一个 feature 或 bugfix 中的所有变动，以及合并时对基线产生的影响。当一个 pull request 关联了 issues 后，我们会更清晰地看到项目的演变过程，而非通过阅读源码的方式。
+* *Review Code* 。这听起来可能有点奇怪，不过我们的确需要 review 别人代码一样 review 自己的代码。有人建议可以先提交一个 pull request ，然后离开一段时间，随后在合并功能前，在远离 IED的情况下，保持新鲜感地开始 review 自己的代码，这会帮助我们捕捉错误，发现我们所遗忘的事情。 Review Code 还会迫使我们思考为什么要用这种方式实现？什么情况下会出错？有没有更好的实现方式？
+* *维护有意义的 Git History* ，尝试做像你在团队里做的 commit ，避免大量 commit ，保持语义化的 commit message 。就像 code review 那样，编写具体的 commit message 会迫使你放慢节奏，开始思考：我在这个 commit 里实现了什么，我是如何尝试实现它的？
 
-**What you can do:**
+在某些情况下，你可以允许自己打破上述约定，例如你或许会决定对于一些很小的修改（例如拼写错误）可以直接推送至 master分支，避免整体节奏变慢。
 
-* *Use issues* (GitHub, Gitlab, BitBucket or wherever your code is hosted). Issues help you keep track of bugs, feature requests and major changes to the project. Also, writing out an issue title and description force you to crystallize the thoughts in your head and define exactly what the problem is and what the solution should involve. You can also take this one step further by adding project management tools like Trello and GitHub Projects.
-* *Use pull requests.* Many devs prefer to push directly to master when working alone. However, there are benefits to making changes via pull requests. It’s easier to see all the changes involved in that feature or bugfix and how they’ll affect the codebase when merged. Also, when pull requests are paired with issues, it makes it easier to observe how a project has evolved without having to read the code and figure it out.
-* *Review your code.* It might sound strange, but you should review your code like it was written by a different person. Some folks suggest making a PR and walking away for a few minutes or hours, then coming back to review the code before merging or updating. Code review, away from your IDE where you are king, allows you to see your code with (somewhat) fresh eyes, helping you to catch bugs and identify things you forgot. Code review also forces you to question yourself. Why did I implement this that way? What could go wrong? Is there a better way?
-* *Maintain meaningful Git history.* Try to commit like you would if you were on a team — avoid large commits, keep commits focused, meaningful commit messages. Like code review, writing a descriptive commit message forces you to slow down. What was I trying to achieve in this commit? How did I attempt to achieve that?
+不管你将哪些建议融入到你的工作流里，重点都会是是这种意识的建立。一个成功的产品的不会凭空发生，他们一定是建立在爱和呵护上的，保持这种意识意味着你会放慢节奏，观察你遇到的痛点，并且开始思考用某些方法和工具来改善它。
 
-There will be instances where you can allow yourself to break the rules. For instance, you might decide that for really minor fixes (such as correcting a typo), it’s okay to push directly to master, in order to avoid slowing things down.
+## 构造可重用的组件和模块
 
-Regardless of what you incorporate into your workflow, it’s key to be intentional. Successful products don’t just happen; they’re built with love and care. Being intentional means stepping back, looking at the pain points you face and thinking of ways and tools to improve them.
+遵循 DRY ，SOLID 和 FIRST 原则进行思考。使用较小的，封装的可重用模块来构建你的软件。使用像 Bit 这样的工具来创建你喜欢的模块集合并且保持更新，你会从中受益，开发也会愈加快速 。
 
-## Compose reusable components and modules
+## 编写文档
 
-Think in accordance to the DRY, SOLID and FIRST principles. Compose software out of smaller, encapsulated, atomic reusable components. Use tools like Bit to create a collection of your favorite building blocks and keep them updated. You’ll end up building better software much faster.
+文档是老生常谈的话题，但是却很少有人坚持做它。在兴奋地编码之后，记录它通常是一件难事，我该如何通过文档来记录代码的复杂逻辑？
 
-## Write documentation
+坚持写文档的原因很多，我们会犯错，会生病，会忘记许多事情，会调整项目，文档可以确保项目知识不会束缚于一个人，也可以帮助开发者全面了解项目后然后保持专注。
 
-Ugh. Documentation. Many know of it, few do it and fewer still like it. After the exciting rush of writing code, it’s often a struggle to document it. How do I capture all the intricacies of my code in prose?
+**你可以这么做：**
 
-**Why?** Humans are fallible. We’ll forget things, we’ll have sick days, or we’ll move on from a project. Documentation ensures knowledge isn’t tied up in a human. Documentation also helps developers to get the big picture and stay focused.
+* *你不是在写本书*，文档并不是文学作品，没有人会为它评分，不用尝试解释一切，保持简洁明了，很多时候，点几个重点就可以了。
+* *在编码前写文档*，定义产品的接口，描述它如何使用，它会如同一个规范指导你进行编码。
+* *在编码后写文档*，按照使用者的视角去思考什么是重要的，如何去使用它或者如何做贡献；编码过程中接口定义可能会发生变化，在编码完成后确保它的正确性是非常重要的。
+* *一遍编码一遍写文档*，这块通常是指为代码编写文档，此类文章很多，本文不做展开。
+* *从单元维度编写文档*，上述原则均适用此，一个单元可能是一个函数，一个类，一个新功能，一个变更，一个模块或者一个完整的项目。如果描述一项工作十分困难，尝试将它拆解为更细粒度的单元来描述（或者提升到更高的层次上）。
 
-**What you can do:**
+## 沟通
 
-* *Realize that you’re not writing a book.* Documentation doesn’t have to be a literary masterpiece. No one is grading you. Don’t try to explain everything. Keep it concise and clear. Sometimes a couple of bullet points is all you need.
-* *Document before coding.* Document the interface of your product — how it will work from the outside. This serves as a spec and will guide you when building.
-* *Document after coding.* Again, write like you’re an outsider looking in. What is important? What do you need to know to use this (or contribute to it)? The spec may change while building, so it’s important to check that any documentation you wrote before coding is still correct when you’re done.
-* *Document while coding.* This mostly applies to writing documentation in code. There are many articles on documenting code, so I won’t go into detail on this.
-* *Work in units.* All of the principles above apply to units. For instance, a unit could be a function, a class, a new feature, a change in behaviour, a module, or an entire product. If documenting a piece of work seems extremely difficult, try breaking it up into smaller units (or alternatively, going up the hierarchy of units).
+沟通主要适用于与小团队或客户合作。
 
-## Communicate
+为什么要遵循它？因为透明制产生责任制，当你必须要向某人报告时，它会帮助你保持专注，这就是许多公司开站会的原因之一。
 
-Communication mostly applies when working with a small team or for a client.
+另外一个原因是，团队中成员遇到的问题往往可以通过与客户或其他团队沟通来解决，我已经记不清楚我抱怨过多少次我的变更没有在线上生效了，直到另外一个团队的同事告诉我，他的变更可能会和我的冲突，从而导致失效。
 
-**Why?** Transparency leads to accountability. When you know you have to report your dealings to someone (be it your peers or your boss), it helps you to remain focused. This is one reason why many companies have standup meetings.
+**你可以这么做：**
 
-Another reason is that so often, one member of the team runs into an issue that could be easily resolved by communicating with the client or another team member. I’ve lost count of the number of times I’ve yelled in frustration, “My changes aren’t showing up on live”, only for another team member to tell me, “Oh, I think I made some changes that might have nullified yours”.
+* 当你遇到未知障碍时，让你的团队和客户知道。
+* 为你的客户定时更新项目进度，尝试让这些更新不要过于技术化。
+* 让你的团队知晓变更计划时间。
+* 消除沟通的障碍，确保每个人都可以很容易知道别人在做什么，挑选适合你们的沟通工具。
 
-**What you can do:**
+本质上，确保及时反馈，这会消除大部分合作者之间的分歧。
 
-* Let your team and client know when you’ve run into unforeseen snags.
-* Give your client regular updates on the progress of the project. Try to keep these updates from getting too technical, though.
-* Let your team know when there’s been a change in plans.
-* Remove obstacles to communication so everyone can easily find out what anyone is working on. Find and use whatever tool works best for you — WhatsApp, email, Slack, and so on.
+## 监控
 
-Essentially, keep the feedback loop alive. It removes a lot of friction between all involved parties.
+所有的事情都可能会发生错误，部署出错，编码错误，异常抛出。准备好监控方案非常重要，它可以帮助你更好地掌控这些错误。监控也是反馈的重要部分，它避免你构建一个象牙塔，而不知晓你的产品的真实运行情况。
 
-## Monitor
+**你可以这么做：**
 
-**Why?** Things will go wrong. Deployments will fail, mistakes will be made, exceptions will be thrown, things will break. It’s important to have provisions for monitoring so that you can be better equipped to tackle these failures. Monitoring is another part of the feedback loop; it prevents you from building in an ivory castle, unaware of how your product is actually performing.
+* *捕获日志*，必要时不要不好意思编写 `console.log()` ，记录更多的信息总比记录少的好，但是务必记住，不要记录不必要的细节污染日志，以便更容易的筛选日志。
 
-**What you can do:**
+* *知晓日志存在哪里，并且配置一个方便查阅的系统*。最基础的查看日志的方法是通过 SSH 工具访问你的服务器，并且调用 tail 命令查看你的日志，或者传送你的日志到日志采集系统里。无论哪种方法，重要的是当你编写了日志后，你清楚去哪里查看它。
 
-* *Capture logs and metrics.* Don’t be ashamed to console.log() where necessary. It’s better to log too much information than too little. However, be sure to avoid polluting the logs with unnecessary details, so it’s easier to sift through the logs.
-* *Know where your logs go and set up a system to easily view them.* This could be something as basic as SSHing into the server to tail a log file or something as advanced as sending your logs into the ELK stack. But it is important that when you write console.log() (or whatever means you use to log), you know where to look for those logs.
-* *Don’t swallow errors.* While your application should be resilient (able to recover in the event of an error), it’s a good idea to log errors you don’t expect. For instance, if you’re calling an API to fetch user-created content (such as tweets), you should be ready to handle cases of 404 Not Found responses. But a different, unexpected error from the API should be logged. I’ve been in such a situation, and because I wasn’t logging these errors, I didn’t know that I had exceeded my rate limit, leading to my app being blacklisted from accessing the API.
-* *Check logs and metrics you’ve captured.* This can be either manually or via automated means. I’ve been in situations where I’ve implemented a “simple” fix and deployed it and went on my merry way, only for me to later realize it wasn’t working. Since then, I picked up the practice of monitoring application logs for a while after a deploy to verify that things were working as expected.
+* *不要忽略错误*。虽然你的应用应该具有弹性（在发生错误时自动恢复），但是依然要在发生异常时记录错误日志。举一个例子，如果你正在调用一个 API 来获取用户的信息，并且你已经准备好处理 404 异常，同时也应该记录来自该 API 的其它错误，有一次我遇到这种场景时，并没有去记录错误，从而导致我无法感知到调用失败的具体原因——因为接口调用超过限制导致我的应用被加入到 API 的黑名单里。
+* *检查你捕获的日志*，这可以通过人工或者自动的方法来完成，曾经我遇到我发布了一个简单的功能，但是后来我才意识到它并未按照预期运行。从那时起，我通过在发布后监控应用日志的方式，来确保程序运行符合预期。
 
-Monitoring strategies can take different forms, from simple console logs and text files to external providers like Sentry, Bugsnag and Elastic APM. Pick a stack that suits you, and go with that.
+监控方案可以有很多种形式，可以是简单的控制台 log ，也可以以文件形式存在于第三方服务商（例如 Sentry， Bugsnag 和 Elastic APM ），挑选一种适合你的，然后使用它。
 
-## Observe and iterate
+## 观察和迭代
 
-This is a best practice as well as a guide for all the rest. There’s no one-size-fits-all formula that works for everyone. People will get used to different workflows, monitoring strategies, documentation styles, and so on. This is why it’s important to always observe and iterate.
+这是一个最佳实践，并且也是其他实践的落地指南。没有一个适合所有人的公式。人们习惯不同的工作流，监控策略，文档风格，这便是为什么要持续观察和迭代的原因。
 
-Observation involves watching behaviour or performance critically. With observation, you connect what you see with what you know and reason out the facts from those. When working solo, you typically don’t have the benefit of advanced case studies and A/B tests, so you pick up clues from “informal” sources such as people’s comments, issue reports, and logs.
+观察主要指批判性地观察用户的行为和表现。通过观察，你可以将所闻所知结合起来，推断出一些结论。当独自研发时，你通常无法受益于高级的用例研究或者 A/B Test ，所以你可以采取一些非正式的方法，例如用户评论，issue 报告和日志。观察之后便开始迭代，迭代是根据你观察的结果来改进你的产品，随后再次进行观察。在观察之后，下一件事情是得出结论，然后实现它们，但是这绝不是终点。
 
-After observation comes iteration. Iteration is about making improvements to your product in response to observations, and then observing again, and so on. After making your observations, the next thing is to come to conclusions, then implement them. But it doesn’t end there.
+举一个例子，我的一个 APP 包含了一个项目列表，并且按照 UTC 格式显示了它们的创建时间，然而这对许多用户来说，显示的时间是错误的，这给他们带来了许多困扰。我决定通过在时间展示后面增加 UTC 字符来修复这个问题，效果还不错，但是这时我意识到，为什么不能根据用户自己的时区来展示时间呢？据此我调整了时间展示策略，并将它们调整为用户所在区域的时间，效果更好了。在与部分用户交流后，我了解到对他们来说，最重要的不是展示精确的时间，而是告诉他们这一项存在多长时间了，于是后来我调整时间展示为相对时间，例如“5分钟前”，“2小时前”，虽然没那么精确了，但是对用户来说更加易用了。
 
-An example scenario: I have an app that displays a list of items and the time they were created. This time is in UTC, though, so for many people using my app, the time shown is wrong, and it often gets them confused.
+这也适用于你的内部流程，没有什么方法是一成不变的，当您选择实践方案时，重要的是观察其是否有效，并且在其基础上迭代，持续做出变化直到你找到适合你的方案。
 
-I decide to fix this by adding “ UTC” to the display (so it shows “5:30 pm UTC”, for instance). This works, and there’s less confusion. But I eventually realize, why should I make the user do the work of converting to their time zone? So I change it to convert the time displayed to the user’s timezone. Much better.
+## 总结
 
-After talking with people who use my app, I realize that the most important thing for them is knowing roughly how old an entry is, not necessarily the exact time. In response to this observation, I push out an update that changes all times to relative times (“5 minutes ago”, “2 hours ago”). The time accuracy is gone, but it makes things much simpler for my users.
-
-This applies to your internal processes too. None of these guidelines is set in stone. As you choose practices, it’s important to observe what’s working and what isn’t, and iterate based on that. Keep making changes until you find what works for you.
-
-## Conclusion
-
-Ideally, in a structured product development environment, there are many different specialized roles that play important parts, from the product owner to the developer. When working solo, it’s important to realize that you’re filling many (possibly all) of these roles, so you have the freedom to run things as you wish. It’s best to use that freedom to create a structure that makes you more productive. It might involve a little extra time and effort, but I assure you it’s worth it!
+理想情况下，在结构化的产品研发环境里，从产品所有者到开发人员，有许多不同专业的人扮演着重要角色。当独立进行研发时，重要的是我们自身要尽可能填充这些角色，因此你可以按照你自己的意愿来做这些事情，最佳情况下，你可以利用这种自由来创建让你效率更高的结构，这会花费一些时间和精力，但绝对物超所值。
 
 阿里云翻译小组
