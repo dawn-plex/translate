@@ -135,6 +135,4 @@ This applies to your internal processes too. None of these guidelines is set in 
 
 Ideally, in a structured product development environment, there are many different specialized roles that play important parts, from the product owner to the developer. When working solo, it’s important to realize that you’re filling many (possibly all) of these roles, so you have the freedom to run things as you wish. It’s best to use that freedom to create a structure that makes you more productive. It might involve a little extra time and effort, but I assure you it’s worth it!
 
-Thanks for reading, and please feel free to comment and ask anything!
-
 阿里云翻译小组
