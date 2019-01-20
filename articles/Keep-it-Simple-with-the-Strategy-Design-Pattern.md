@@ -7,52 +7,51 @@
 
 ---
 
-# Keep it Simple with the Strategy Design Pattern
-[Chidume Nnamdi](https://blog.bitsrc.io/@kurtwanger40)
+# 使用策略设计模式来简化代码
 
-bject-oriented programming is a programming paradigm that revolves around using objects and declaration of Classes to provide simple and reusable design to our program.
+面向对象编程是一种编程范式，这种范式围绕使用对象和类声明的方式来为我们的程序提供简单且可重用的设计。
 
-According to Wikipedia:
-> “Object-oriented programming (OOP) is a programming paradigm based on the concept of “objects”, which may contain data, in the form of fields, often known as attributes; and code, in the form of procedures, often known as methods.”
+根据维基百科：
+> “面向对象编程（OOP）是一种基于“对象”概念的编程范式，对象可能包含字段形式的数据，通常称为属性；还有程序形式的代码，通常称为方法。”
 
-Wow!! nice but OOP is not all, how to structure your classes and their relationships are what matters. Complex systems like the brain, city, anthill, buildings are full of patterns. To achieve a long-lasting state they are built with a well-structured architecture. And software development is not left out.
+但 OOP 概念本身不是重点，如何构建你的类以及它们之间的关系才是重点所在。像大脑、城市、蚂蚁窝、建筑这种复杂的系统都充满了各种模式。为了实现稳定持久的状态，它们采用了结构良好的架构。软件开发也不例外。
 
-Designing a large application requires intricate and complex connection and collaboration of objects and data.
+设计一个大型应用需要对象和数据之间错综复杂的联系和协作。
 
-OOP provides the design to do that, but as I said earlier we need a pattern to achieve a long-lasting one. Problems might arise in our OOP-designed app which might lead to decay.
+OOP 为我们提供了这样做的设计，但是正如我之前所说，我们需要一个模式来达到一个持久稳定的状态。否则在我们的 OOP 设计应用里可能会出现问题导致代码腐烂。
 
-As such, these problems have been cataloged overtime and elegant solutions for each of them have been described by experienced early Software Developers. These solutions are known as the Design Patterns.
+因此，这些问题已经被记录归类，并且经验丰富的早期软件开发者已经描述了每类问题的优雅解决方案。这些方案就被称为*设计模式*。
 
-To date, there are 24 design patterns, as described in the original book, `Design Patterns: Elements of Reusable Object-Oriented Software`. Each of these patterns provides a set of solution to a particular problem.
+迄今为止，已经有 24 种设计模式，如书中所描述的，`设计模式：可复用面向对象软件的基础`。这里每一种模式都为一个特定问题提供了一组解决方案。
 
-In this article, we will look into the **Strategy Pattern** to understand how it works and how and when to apply it during software development.
+在这篇文章里，我们将走进**策略模式**，去理解它怎样工作，在软件开发中，何时去应用它，如何去应用它。
 
-Tip: Build Javascript apps faster with [Bit](https://github.com/teambit/bit). Easily share components across projects and apps, collaborate with your team and use them like Lego. It’s a great way to improve modularity and keep your code DRY at scale.
+提示：在 [Bit](https://github.com/teambit/bit) 上可以更快地构建 JavaScript 应用。在这里可以轻松地共享项目和应用中的组件、与您的团队协作，并且使用它们就像使用Lego一样。这是一个改善模块化和大规模保持代码 DRY 的好方法。
 
-## Strategy Pattern: Basic Idea
-Strategy Design Pattern is a type of behavioral design patterns that encapsulates a "family" of algorithms and selects one from the pool for use during runtime. The algorithms are interchangeable, meaning that they are substitutable for each other.
+## 策略模式：基本概念
+策略模式是一种行为型设计模式，它封装了一系列算法，在运行时，从算法池中选择一个使用。算法是可交换的，这意味着它们可以互相替代。
 
-> The strategy pattern is a behavioral design pattern that enables selecting an algorithm at runtime — Wikipedia
+> 策略模式是一种行为型模式，它可以在运行时选择算法 ——维基百科
 
-The key idea is to create objects which represent various strategies. These objects form a pool of strategies from which the context object can choose from to vary its behavior as per its strategy. These objects(strategies) perform the same operation, have the same(single) job and compose the same interface strategy.
+关键的想法是创建代表各种策略的对象。这些对象会形成一个策略池，上下文对象可以根据策略进行选择来改变它的行为。这些对象（策略）功能相同、职责单一，并且共同组成策略模式的接口。
 
-Let’s take the sorting algorithms we have for example. Sorting algorithms have a set of rule specific to each other they follow to effectively sort an array of numbers. We have the
+以我们已有的排序算法为例。排序算法有一组彼此特别的规则，来有效地对数字类型的数组进行排序。我们有一下的排序算法：
 
-* Bubble Sort
-* Linear Search
-* Heap Sort
-* Merge Sort
-* Selection Sort
+* 冒泡排序
+* 顺序查找
+* 堆排序
+* 归并排序
+* 选择排序
 
-to name a few.
+仅举几例。
 
-Then, in our program, we need different sorting algorithms at a time during execution. Using SP allows us to group these algorithms and select from the pool when needed.
+然后，在我们的计划中，我们在执行期间同时需要几种不同的排序算法。使用策略模式允许我们队这些算法进行分组，并且在需要的时候可以从算法池中进行选择。
 
-It is more like a plugin, like the PlugnPlay in Windows or in the Device Drivers. All the plugins must follow a signature or rule.
+这更像一个插件，比如 Windows 中的 PlugnPlay 或者设备驱动程序。所有插件都必须遵循一种签名或规则。
 
-For example, a Device Driver could be anything, Battery Driver, Disk Driver, Keyboard Driver …
+举个例子，一个设备驱动程序可以是任何东西，电池驱动程序，磁盘驱动程序，键盘驱动程序......
 
-They must implement:
+它们必须实现:
 
 ```
 NTSTATUS DriverEntry (_In_ PDRIVER_OBJECT ob, _In_ PUNICODE_STRING pstr) {
@@ -68,13 +67,13 @@ NTSTATUS AddDevice(PDRIVER_OBJECT DriverObject, PDEVICE_OBJECT pdo)
 }
 ```
 
-Every driver must implement the above functions, the DriverEntry is used by the OS when loading a driver, the DriverUnload when removing the driver from memory, the AddDriver for adding the driver to the driver list.
+每一个驱动程序必须实现上面的函数，操作系统使用 DriverEntry加载驱动程序，从内存中删除驱动程序时使用DriverUnload，AddDriver 用于将驱动程序添加到驱动程序列表中。
 
-The OS doesn’t need to know what your driver does, all it knows that since you called it a driver it will assume all those are present and will call them at the required time.
+操作系统不需要知道你的驱动程序做了什么，它所知道的就是由于你称它为驱动程序，它会假设这些所有都存在，并在需要的时候调用它们。
 
-If we lump the sorting algorithms in one class we will find ourselves writing conditional statements to select one algorithm.
+如果我们把排序算法都集中在一个类中，我们会发现我们自己在编写条件语句来选择其中一个算法。
 
-Most importantly, all the strategies must have the same signature. If you are using an OO-Language make sure the strategies inherit from a common interface, if using a non-OO-Language like JavaScript, make sure the strategies have a common method to call by the context.
+最重要的是，所有的策略必须有相同的签名。如果你使用面向对象语言，必须保证所有的策略都继承自一个通用接口，如果不是使用面向对象语言，比如 JavaScript，请保证所有的策略都有一个上下文环境可以调用的公共方法。
 
 ```
 // In an OOP Language -
@@ -113,40 +112,40 @@ sortProgram.runSort(new HeapSort())
 sortProgram.runSort(new LinearSearch())
 ```
 
-The SortingProgram takes a SortingStrategy as param in its runSort and calls the sort method. Any concrete implementation of the `SortingStrategy` must implement the `sort` method.
+`SortingProgram` 在它的 runSort 方法中，使用 `SortingStrategy` 作为参数，并调用了 `sort` 方法。`SortingStrategy` 的任何具体实现都必须实现 `sort` 方法。
 
-You see SP supports the [SOLID principles](https://blog.bitsrc.io/solid-principles-every-developer-should-know-b3bfa96bb688) and forces us to abide by it. The D in SOLID says we must depend on abstractions, not on concretions. That’s what happened in the runSort method. Also the O, which says entities should be open for, not extension.
+您可以看到，SP 支持了 [SOLID principles](https://blog.bitsrc.io/solid-principles-every-developer-should-know-b3bfa96bb688)，并强制我们遵循它。SOLID 中的 D 表示我们必须依赖抽象，而不是具体实现。这就是 `runSort` 方法中发生的事情。还有 O，它表示实体应该是开放的，而不是扩展的。
 
-If we had taken an alternative of subclassing our sorting algorithms, we will eventually run into a code that is hard to understand and maintain because we will have many related classes with the difference being on the algorithms they carry. The I, we have one specific interface for the concrete strategy to implement.
+如果我们采用了子类化作为排序算法的替代方案，会得到难以理解和维护的代码，因为我们会得到许多相关类，它们的差距只在于它们所拥有的算法。SOLID 中的 I，表示对于要实现的具体策略，我们有一个特定的接口。
 
-It isn’t bogus just specific to the job because any sorting algorithm will have to run the sort to sort:). The S, all the classes implementing the strategy have only one job of sorting. The L, all subclasses of the concrete strategies are substitutable for their superclasses.
+这不是针对某一个特定工作虚构的，因为每一个排序算法都需要运用排序来排序:)。SOLID 中的 S，表示了实现该策略的所有类都只有一个排序工作。L 则表示了某一个策略的所有子类对于他们的父类都是可替换的。
 
-## Structure
-![](https://cdn-images-1.medium.com/max/1600/1*4vdmSjQVWuBF7C2ZGelfYA.png)
+## 架构
+![](https://img.alicdn.com/tfs/TB1uz8RA6DpK1RjSZFrXXa78VXa-804-656.png)
 
-In the figure above, the `Context` class depends on the `Strategy`. During execution or runtime, different strategies of `Strategy` type are passed to the `Context` class. The Strategy provides the template by which the strategies must abide by for implementation.
+如上图所示，`Context` 类依赖于 `Strategy`。在执行或运行期间，`Strategy` 类型不同的策略被传递给 `Context` 类。`Strategy` 提供了策略必须实现的模板。
 
-![](https://cdn-images-1.medium.com/max/2000/1*9hN9PDGic_nmL4VOL-B73Q.png)
+![](https://img.alicdn.com/tfs/TB1d9NVA3TqK1RjSZPhXXXfOFXa-1287-656.png)
 
-In the above UML class diagram, the Concrete class depends on an abstraction, Strategy interface. It doesn’t implement the algorithm directly. The Context from its method `runStraegy` calls the doAlgorithm in the Strategy concretion passed to it. The Context class is independent of the method and doesn't know and doesn't need to know how the doAlgorithm method is implemented. By virtue of `Design by Contract`, the class implementing the Strategy interface must implement the doAlgorithm method.
+在上面的 UML 类图中，`Concrete` 类依赖于抽象，`Strategy` 接口。它没有直接实现算法。`Context` 从 `runStrategy` 方法中调用了 `Strategy` 传递来的 `doAlgorithm`。`Context` 类独立于 `doAlgorithm` 方法，它不知道也没必要知道 `doAlgorithm` 是如何实现的。根据 `Design by Contract`，实现 `Strategy` 接口的类必须实现 `doAlgorithm` 方法。
 
-In strategy design pattern, there are three main entities: Context, Strategy, and ConcreteStrategy.
+在策略设计模式中，这里有三个实体：Context、Strategy 和 ConcreteStrategy。
 
-The **Context** is the body composing the concrete strategies where they play out their roles.
+**Context** 是组成具体策略的主体，策略在这里发挥着它们各自的作用。
 
-**Strategy** is the template that defines how all startegies must be configured.
+**Strategy** 是定义如何配置所有策略的模板。
 
-**ConcreteStrategy** is the implementation of the Strategy template(interface).
+**ConcreteStrategy** 是策略模板（接口）的实现。
 
-## Examples
-Using Steve Fenton’s example `Car Wash program`, you know car wash can run on different grades of washing and cleaning depending on the money the driver has, the more the money the higher the wash level. Let's the Car Wash offers:
+## 示例
+使用 Steve Fenton 的示例 `Car Wash program`，你知道洗车分不同的清洗等级，这取决于车主支付的金额，付的钱越多，清洗等级越高。让我们看一下提供的洗车服务：
 
-* Basic Wheel and Body washing
-* Executive Wheel and Body washing
+* 基础车轮车身清洗
+* 高档车轮车身清洗
 
-The Basic wheel and Body cleaning is just the normal soaping and rinsing for the body and brushing for the car.
+基础车轮车身清洗仅仅是常规的清洗和冲洗和刷刷车身。
 
-Executive cleaning goes beyond that, they wax the body and the wheel to make it look shiny and then dry them. The cleaning depends on the level the driver pays for. level 1 gives you Basic cleaning for both body and wheels:
+高档清洗就不仅仅是这些，他们会为车身和车轮上蜡，让整个车看起来光彩照人并提供擦干服务。清洗等级取决于车主支付的金额。一级清洗只给你提供基础清洗车身和车轮：
 
 ```
 interface BodyCleaning {
@@ -199,15 +198,15 @@ class CarWash {
 }
 ```
 
-You see now, some pattern is emerging. We are reusing the same class in many conditions, the classes are related but differ in behavior. Also, our code is getting untidy and heavy.
+现在你看到了，一些模式出现了。我们在许多不同的条件下重复使用相同的类，这些类都相关但是在行为上不同。此外，我们的代码变得杂乱且繁重。
 
-Most importantly, this our program fails the Open-Closed Principle in the S.O.L.I.D principles, which states that modules should be open for `extension` not `modification`.
+更重要的是，我们的程序违反了 S.O.L.I.D 的开闭原则，开闭原则指出模块应该对 `extension` 开放而不是 `modification`。
 
-For every new wash level, another conditional is added, that’s modification.
+对于每一个新的清洗等级，就会新增另一个条件，这就是 `modification`。
 
-Using the strategy pattern, we will have to relieve our CarWash program of any responsibility for our knowledge of water level.
+使用策略模式，我们必须解除洗车程序与清洗等级的耦合关系。
 
-To do that we have to separate the cleaning actions. First, we create an interface all actions must implement:
+要做到这一点，我们必须分离清洗操作。首先，我们创建一个接口，所有的操作都必须实现它：
 
 ```
 interface ValetFaactory {
@@ -216,7 +215,7 @@ interface ValetFaactory {
 }
 ```
 
-Then all the cleaning strategies:
+所有的清洗策略：
 
 ```
 class BronzeWashFactory implements ValetFactory {
@@ -245,7 +244,7 @@ class GoldWashFactory implements ValetFactory {
 }
 ```
 
-Next, we touch the CarWash program:
+接下来，我们开始改造 `CarWashProgram`：
 
 ```
 // ...
@@ -262,7 +261,7 @@ class CarWashProgram {
 }
 ```
 
-Now, we pass any cleaning strategy we want to the CarWashProgram.
+现在，我们把所有所需的清洗策略传递给 `CarWashProgram` 中，
 
 ```
 // ...
@@ -271,15 +270,15 @@ carWash.runWash()
 const carWash = new CarWashProgram(new BronzeWashFactory())
 carWash.runWash()
 ```
-## Another Example: Authentication Strategy
-Let’s say we have an app, that we want to secure ie add authentication to it. We have different auth schemes and strategies:
+## 另一个示例：认证策略
+假设我们有一个软件，我们为了安全想为它添加一个身份认证。我们有不同的身份验证方案和策略：
 
 * Basic
 * Digest
 * OpenID
 * OAuth
 
-We might try to implement something like this:
+我们也许会试着像下面一样实现：
 
 ```
 class BasicAuth {}
@@ -306,8 +305,7 @@ class AuthProgram {
 }
 ```
 
-The same old long chain of conditionals. Also, if we want to auth. for a particular route in our program, we will find ourselves with the same thing.
-
+同样的，又是一长串的条件。此外，如果我们想认证。对于我们程序中特定的路由，我们会发现我们面对相同的情况。
 ```
 class AuthProgram {
     route(path:string, authStyle: any) {
@@ -317,7 +315,7 @@ class AuthProgram {
 }
 ```
 
-If we apply the strategy design pattern here, we will create an interface that all auth strategies must implement:
+如果我们在这里应用策略设计模式，我们将创建一个所有认证策略都必须实现的接口：
 
 ```
 interface AuthStrategy {
@@ -340,9 +338,9 @@ class OpenID implements AuthStrategy {
 }
 ```
 
-The AuthStrategy defines the template by which all strategies must build on. Any concrete auth strategy must implement the auth method to provide us with its style of authentication. We have the Auth0, Basic and OpenID concrete strategies.
+`AuthStrategy` 定义所有策略都必须构建于之上的模板。任何具体认证策略都必须实现这个认证方法，来为我们提供身份认证的方式。我们有 Auth0、Basic 和 OpenID 这几个具体策略。
 
-Next, we need to touch our AuthProgram class:
+接下来，我们需要对 AuthProgram 类进行改造：
 
 ```
 // ...
@@ -366,19 +364,19 @@ class AuthProgram {
 }
 ```
 
-You see now, the authenticate method doesn’t carry the long switch case. The use method sets the authentication strategy to use and the authenticate method just calls the auth method. It cares less about how the AuthStrategy implements its authentication.
+现在可以看到，`authenticate` 方法不再包含一长串的 switch case 语句。`use` 方法设置要使用的身份验证策略，`authenticate` 只需要调用 `auth` 方法。它不关心 `AuthStrategy` 如何实现的身份认证。
 
 ```
 log(new AuthProgram().use(new OpenID()).authenticate())
 // Authenticating using OpenID Strategy
 ```
 
-## Strategy Pattern: Problems It Solves
-Strategy Pattern prevents hard-wiring of all the algorithms into the program. This makes our program complex and much more bogus and hard to refactor/maintain and understand.
+## 策略模式：解决了什么问题
+策略模式可以防止将所有算法都硬编码到程序中。硬编码的方式使得我们的程序复杂且难以维护和理解。
 
-This, in turn, makes our program to contain algorithms they do not use.
+反过来，硬编码的方式进而让我们的程序包含一些从来不用的算法。
 
-Let’s say we have a Printer class that prints in different flavors and style. If we contain all the styles and flavors of printing into the Printer class:
+假设我们有一个 `Printer` 类，可以打印不同的风格和特色。如果我们在 `Printer` 类中包含所有的风格和特色：
 
 ```
 class Document {...}
@@ -404,7 +402,7 @@ class Printer {
 }
 ```
 
-OR
+或者
 
 ```
 class Document {...}
@@ -424,9 +422,9 @@ class Printer {
 }
 ```
 
-You see we end up with a bogus class, that is hard to read, maintain and with too many conditionals.
+看吧，我们最后得到了一个不正宗的类，这个类有太多条件了，是不可读、不可维护的。
 
-But with the Strategy Pattern, we break the printing styles into different tasks.
+但是应用策略模式的话，我们将打印方式分解为不同的任务。
 
 ```
 class Document {...}
@@ -453,12 +451,12 @@ class Printer {
 }
 ```
 
-So, instead of many conditionals, each condition is moved to a separate strategy class. There is no need for the Printer class to know the different printing styles implementation.
+因此，每个条件都转移到了一个单独的策略类中，而不是一大串条件。对 `Printer` 类来说，它没有必要知道不同打印方式是怎么实现的。
 
-## Strategy Pattern and the SOLID Principles
-In Strategy Pattern, composition is used over inheritance. It is advised to program to abstraction than to concretions. You see that Strategy Pattern is compatible with [the SOLID principles](https://blog.bitsrc.io/solid-principles-every-developer-should-know-b3bfa96bb688).
+## 策略模式和 SOLID 原则
+在策略模式中，组合通常优于继承。它建议对抽象进行编程而不是对实体编程。你会看到策略模式与[ SOLID 原则](https://blog.bitsrc.io/solid-principles-every-developer-should-know-b3bfa96bb688)的完美结合。
 
-As an example, we have a DoorProgram that have different styles of locking mechanism to lock doors. As different locking mechanisms change between subclasses of door. We might be tempted to apply the door locking mechanism to the `Door` class like this:
+例如，我们有一个 `DoorProgram`，它有不同的锁定机制来锁门。由于不同的锁定机制在门的子类之间可以改变。我们也许会试图像下面这样来应用门的锁定机制到 `Door` 类：
 
 ```
 class Door {
@@ -480,9 +478,9 @@ class Door {
 }
 ```
 
-It seems OK, but the behaviours of doors differs. Each has its own locking and opening mechanism. That is different behaviours.
+只看起来还不错，但是每个门的行为不同。每个门都有自己的锁定和开门机制。这是不同的行为。
 
-When we create different types of Doors:
+当我们创建不同的门：
 
 ```
 // ...
@@ -493,9 +491,9 @@ class TimedDoor extends Door {
 }
 ```
 
-And try to implement it the open/lock-ing mechanism, you see that we must call the parent method before implementing its own open/lock mechanism.
+并且尝试为它实现打开/锁定机制，你会发现我们在实现它自己的打开/锁定机制之前，必须调用父类的方法。
 
-If we make the `Door` an interface like this:
+如果我们像下面一样创建了一个接口 `Door`：
 
 ```
 interface Door { 
@@ -504,7 +502,7 @@ interface Door {
 }
 ```
 
-You see that the open/lock behavior must be declared in each class or model or types of Door.
+你会看到必须在每个类或模型或 `Door` 类型的类中声明打开/锁定的行为。
 
 ```
 class GlassDoor implements Door {
@@ -517,13 +515,13 @@ class GlassDoor implements Door {
 }
 ```
 
-Quite good, but there are many drawbacks here which will pop up as our app grows. A Door model must have an open/lock mech. Is it a must a Door must open/close? No. A Door might not even be closed at all. So we see our Door models will be `forced` to open/lock.
+这很不错，但是随着应用程序的增长，这里会暴露许多弊端。一个 Door 模型必须有一个打开/锁定机制。一个门必须能打开/关闭吗？不是的。一扇门也许根本就不必关上。所以会发现我们的 Door 模型将会被`强制`设置打开/锁定机制。
 
-Next, the interface doesn't draw a line between using the interface as a model or as an open/lock mech. Note: in [S in SOLID](https://blog.bitsrc.io/solid-principles-every-developer-should-know-b3bfa96bb688) a class must have one responsibility.
+接下来，接口不会对接口作为模型使用和作为打开/锁定机制使用做区分。注意：在 [S in SOLID](https://blog.bitsrc.io/solid-principles-every-developer-should-know-b3bfa96bb688) 中，一个类必须拥有一个能力。
 
-A Glass Door must have the only characteristics of a Glass Door also a Wooden Door, a Metal Door, a Ceramic Door(do they have that?) Another class should be responsible for handling the opening/locking mechanism.
+玻璃门必须具有作为玻璃门的唯一特征，木门、金属门、陶瓷门也是同样的。另外的类应该负责打开/锁定机制。
 
-Using SP, we separate our related, in this case, the locking/opening mech. into classes. Then at runtime, we pass the Door model the lock/open mechanism it is to use. The Door model can select from a pool of lock/open strategies which lock/open mech. to use.
+使用策略模式，我们将我们相关的东西都分开，在这个例子中，就是将打开/锁定机制分开。进入类中，然后在运行期间，我们为 Door 模型传递它所需要使用的锁定/打开机制。Door 模型能够从锁定/打开策略池中选择一个锁定/打开装置来使用。
 
 ```
 interface LockOpenStrategy {
@@ -568,24 +566,24 @@ new DoorAdapter().openDoor(glassDoor)
 new DoorAdapter().openDoor(metalDoor)
 ```
 
-Each open/lock strategy is defined in a class inheriting from a base interface. SP supports this because it is better to code to an interface so as to achieve high cohesion.
+每一个打开/锁定策略都在一个继承自基础接口的类中定义。策略模式支持这一点，因为面向接口编程可以实现高内聚性。
 
-Next, we have our Door models each a subclass of the Door class. We have a DoorAdapter whose job is to open doors passed to it. We created objects of a couple of Door models and set their lock/open strategies. The glass door is to be locked/opened via retina scanning and the metal door has a keypad for entering the secret password.
+接下来，我们会有 Door 模型，每个 Door 模型都是 Door 类的一个子类。我们有一个 `DoorAdapter` ，它的工作就是打开传递给它的门。我们创建了一些 Door 模型的对象，并且设置了它们的锁定/打开策略。玻璃门通过视网膜扫描来进行锁定/打开，金属门有一个输入密码的键盘。
 
-The thing we achieved here is the separation of concerns, separation of related behaviors. Each Door models doesn’t know and bear the concern of implementing a certain locking/opening strategy, it was delegated to another entity. We programmed to an interface as required by SP because it makes switching strategies during runtime easy.
+我们在这里关注的分离，是相关行为的分离。每个 Door 模型不知道也不关心一个具体锁定/打开策略的实现，这个问题由另一个实体来关注。我们按照策略模式的要求面向接口编程，因为这使得在运行期间切换策略变得很容易。
 
-This might not hold for long but it is a better approach courtesy of the Strategy Pattern.
+这可能不会持续很久，但是这是一种经由策略模式提供的更好的方式。
 
-A Door might have many lock/open strategies and might use one or all during both locking and opening. Whatever you do keep the Strategy Pattern in mind.
+一扇门也许会有很多锁定/打开策略，并且可能会在锁定和打开运行期间使用到一个或多个策略。无论如何，你一定要在脑海中记住策略模式。
 
-## Strategy Pattern in JavaScript
-Most of our examples are based on OOP languages. JS isn’t statically typed but dynamically typed. So there is no concept of the OOP like interface, polymorphism, encapsulation, delegation is not present. But in SP, we can assume they are present, we simulate them.
+## JavaScript 中的策略模式
+我们的大部分示例都是基于面向对象编程语言。JavaScript 不是静态类型而是动态类型。所以在 JavaScript 中没有像 接口、多态、封装、委托这样的面向对象编程的概念。但是在策略模式中，我们可以假设他们存在，我们可以模拟它们。
 
-Let’s use our first example to demonstrate how we could apply SP in JS.
+让我们用我们的第一个示例来示范如何在 JavaScript 中应用策略模式。
 
-The first example was based on sorting algorithms. Now, the interface SortingStrategy has a method sort that all implementing strategies must define. The SortingProgram class takes a SortingStrategy in its runSort method and calls the sort method.
+第一个示例是基于排序算法的。现在，`SortingStrategy` 接口有一个 `sort` 方法，所有实现的策略都必须定义。SortingProgram` 类将 `SortingStrategy ` 作为参数传递给它的 `runSort` 方法，并且调用了 `sort` 方法。
 
-We model our sorting algorithms:
+我们对排序算法进行建模：
 
 ```
 var HeapSort = function() {
@@ -618,34 +616,34 @@ sortProgram.runSort(new HeapSort())
 sortProgram.runSort(new LinearSearch())
 ```
 
-There was no interface but yet we did it. There could be a better and robust way but for now, this will suffice.
+这里没有接口，但我们实现了。可能会有一个更好更健壮的方法，但是对现在来说，这已经足够了。
 
-The thing here is to have it in my mind that for every sorting strategy we want to implement it must have a sort method where the sorting will be carried.
+这里我想的是，对于我们想要实现的每一个排序策略，都必须有一个排序方法。
 
-## Strategy Pattern: When To Use
-Strategy Pattern should be used when you begin to notice recurring algorithms but in different variations. This way, you need to separate the algorithms into classes and feed them based on want in your program.
+## 策略模式：使用的时机
+当你开始注意到反复出现的算法，但是又互相有不同的时候，就是策略模式使用的时机了。通过这种方式，你需要将算法拆分成不同的类，并按需提供给程序。
 
-Next, if you notice recurring conditional statements around a related algorithm.
+然后就是，如果你注意到在相关算法中反复出现条件语句。
 
-When most of your classes have related behaviors. It will be time to move them into classes.
+当你的大部分类都有相关的行为。是时候将它们拆分到各种类中了。
 
-## Advantages
-* Separation of Concerns: Related behaviors and algorithms are separated into classes and strategies.
-* Easy switching of strategies in runtime because you always program to interfaces.
-* Elimination of bogus and conditional-infested code.
-* Easy maintainability and refactoring.
-* Choice of algorithms to use.
+## 优势
+* 关注点分离：相关的行为和算法会被拆分到类和策略中。
+* 由于面向接口编程，在运行期间切换策略是一件很容易的事情。
+* 消除不正宗的代码和受条件侵蚀的代码
+* 可维护的和可重构的
+* 选择要使用的算法
 
-## Conclusion
-Strategy Pattern is one of the many Design Patterns in software development. In this post, we saw many examples of how to use the SP and later on, we saw its benefits and drawbacks.
+## 结论
+策略模式是许多软件开发设计模式的其中一种。在本文中，我们看到了许多关于如何使用策略模式的示例，然后，我们看到了它的优势和弊端。
 
-Remember, you don’t have to implement a design pattern as described. You have to thoroughly understand it and know when to apply it. And if you don’t understand it, no worry, keep referring to it again and again for insights. With time you’ll get the hang of it, and in the end, you will see the benefits.
+记住了，你不必按照描述来实现一个设计模式。你需要完全理解它并知道应用它的时机。如果你不理解它，不要担心，多次使用它以加深理解。随着时间的推移，你会掌握它的窍门，最后，你会领略到它的好处。
 
-Next, in our series, we will be looking into the **Template Method Design Pattern** so stay tuned :)
+接下来，在我们的系列中，我们将会研究 **模板方法设计模式**，请继续关注:)
 
-If you have any question regarding this or anything I should add, correct or remove, feel free to comment, email or [DM me](https://twitter.com/ngArchangel). Thanks for reading! 👏
+如果你对此有任何疑问，或者我还应该做些补充、订正、删除，请随时发表评论、邮件或 [DM me](https://twitter.com/ngArchangel)。感谢阅读！👏
 
-## Credits
+## 参考
 * [Design Patterns: Elements of Reusable Object-Oriented Software by Gamma, Helm, Johnson, & Vlissides, Addison Wesley, 1995](https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612)
 * [Pro TypeScript — Application-Scale JavaScript Development by Steve Fenton](https://www.amazon.com/Pro-TypeScript-Application-Scale-JavaScript-Development/dp/1484232488/ref=sr_1_1?s=books&ie=UTF8&qid=1543248511&sr=1-1&keywords=pro+typescript+steve+fenton)
 * [The Strategy Pattern — Wikipedia](https://en.wikipedia.org/wiki/Strategy_pattern)
