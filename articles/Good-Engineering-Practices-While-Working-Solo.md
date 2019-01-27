@@ -1,7 +1,7 @@
 > * 原文地址：[Good Engineering Practices while Working Solo](https://blog.bitsrc.io/good-engineering-practices-while-working-solo-ad872e727af4)
 > * 原文作者：[Shalvah](https://blog.bitsrc.io/@shalvah)
 > * 译文出自：[阿里云翻译小组](https://github.com/dawn-teams/translate)
-> * 译文链接：[https://github.com/dawn-teams/translate/blob/master/articles/.md](https://github.com/dawn-teams/translate/blob/master/articles/.md)
+> * 译文链接：[https://github.com/dawn-plex/translate/blob/master/articles/Good-Engineering-Practices-While-Working-Solo.md](https://github.com/dawn-plex/translate/blob/master/articles/Good-Engineering-Practices-While-Working-Solo.md)
 > * 译者：[靖鑫](https://github.com/luckyjing)
 > * 校对者：[也树](https://github.com/xdlrt)，[灵沼](https://github.com/su-dan)
 
