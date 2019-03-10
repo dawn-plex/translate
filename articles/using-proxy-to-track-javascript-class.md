@@ -3,7 +3,7 @@
 > * 译文出自：[阿里云翻译小组](https://github.com/dawn-teams/translate)
 > * 译文链接：[https://github.com/dawn-teams/translate/blob/master/articles/.md](https://github.com/dawn-teams/translate/blob/master/articles/using-proxy-to-track-javascript-class.md)
 > * 译者：[牧曈](https://github.com/jeasonstudio)
-> * 校对者：[]()
+> * 校对者：[也树](https://github.com/xdlrt)
 
 ---
 
